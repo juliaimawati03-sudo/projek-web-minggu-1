@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\Product;
+use App\Models\Produk;
 use App\Models\Transaksi;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -18,7 +18,7 @@ class DetailTransaksiFactory extends Factory
 
         return [
             'transaksi_id' => Transaksi::factory(),
-            'produk_id' => Product::factory(),
+            'produk_id' => Produk::factory(),
             'jumlah' => $jumlah,
             'harga_satuan' => $hargaSatuan,
             'subtotal' => $jumlah * $hargaSatuan,

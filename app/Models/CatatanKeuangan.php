@@ -16,6 +16,7 @@ class CatatanKeuangan extends Model
         'tanggal',
         'nominal',
         'keterangan',
+        
     ];
 
     protected $casts = [

@@ -25,3 +25,8 @@ _ide_helper.php
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# ============================================
+# Folder backup / repo lain — JANGAN di-track
+# ============================================
+/projek-web-minggu-1

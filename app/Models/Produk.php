@@ -5,9 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Product extends Model
+class Produk extends Model
 {
     use HasFactory;
+
+    protected $table = 'produk';
 
     protected $fillable = [
         'supplier_id',
@@ -18,17 +20,17 @@ class Product extends Model
     ];
 
     protected $casts = [
-        'harga' => 'decimal:2',
+        'harga' => 'integer',
         'stok' => 'integer',
     ];
 
     public function supplier()
     {
-        return $this->belongsTo(Supplier::class);
+        return $this->belongsTo(Supplier::class, 'supplier_id');
     }
 
     public function detailTransaksis()
     {
-        return $this->hasMany(DetailTransaksi::class);
+        return $this->hasMany(DetailTransaksi::class, 'produk_id');
     }
 }
