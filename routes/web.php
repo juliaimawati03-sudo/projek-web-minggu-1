@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Admin\PenggunaController;
 
 // =====================================================
 // PUBLIC
@@ -27,16 +29,11 @@ Route::get('/orders/success', function () {
 // =====================================================
 // AUTH
 // =====================================================
-Route::get('/login', function () {
-    return view('auth.login');
-})->name('login');
+Route::get('/login',   [AuthController::class, 'showLogin'])->name('login');
+Route::post('/login',  [AuthController::class, 'login'])->name('login.attempt');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::post('/logout', function () {
-    // Frontend only — backend nanti pakai Auth::logout()
-    return redirect('/login');
-})->name('logout');
-
-// Lupa Password
+// Lupa Password (frontend only)
 Route::get('/forgot-password', function () {
     return view('auth.forgot-password');
 })->name('password.request');
@@ -94,13 +91,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // Backend nanti
     })->name('supplier.store');
 
-    Route::get('/pengguna', function () {
-        return view('admin.pengguna.index');
-    })->name('pengguna.index');
-
-    Route::post('/pengguna', function () {
-        // Backend nanti
-    })->name('pengguna.store');
+    // ===== PENGGUNA — PAKAI CONTROLLER =====
+    Route::get('/pengguna', [PenggunaController::class, 'index'])->name('pengguna.index');
+    Route::post('/pengguna', [PenggunaController::class, 'store'])->name('pengguna.store');
+    Route::put('/pengguna/{id}', [PenggunaController::class, 'update'])->name('pengguna.update');
+    Route::delete('/pengguna/{id}', [PenggunaController::class, 'destroy'])->name('pengguna.destroy');
 
     Route::get('/laporan', function () {
         return view('admin.laporan.index');
@@ -112,22 +107,18 @@ Route::prefix('admin')->name('admin.')->group(function () {
 // =====================================================
 Route::prefix('kasir')->name('kasir.')->group(function () {
 
-    // Dashboard
     Route::get('/dashboard', function () {
         return view('kasir.dashboard');
     })->name('dashboard');
 
-    // Pesanan Masuk
     Route::get('/pesanan', function () {
         return view('kasir.pesanan');
     })->name('pesanan.index');
 
-    // Detail Pesanan
     Route::get('/pesanan/{id}', function ($id) {
         return view('kasir.detail-pesanan');
     })->name('pesanan.show');
 
-    // Riwayat Transaksi
     Route::get('/riwayat', function () {
         return view('kasir.riwayat');
     })->name('riwayat.index');

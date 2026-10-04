@@ -29,20 +29,25 @@
                 <p class="text-sm text-neutral-500">Silakan login untuk melanjutkan</p>
             </div>
 
-            {{-- Alert Sukses (setelah reset password) --}}
-            <div id="alert-success" class="hidden bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl mb-4 text-sm flex gap-2">
-                <span>✅</span>
-                <span>Password berhasil diubah. Silakan login menggunakan password baru.</span>
-            </div>
+            {{-- Alert Sukses --}}
+            @if (session('success'))
+                <div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl mb-4 text-sm flex gap-2">
+                    <span>✅</span>
+                    <span>{{ session('success') }}</span>
+                </div>
+            @endif
 
             {{-- Alert Error --}}
-            <div id="alert-error" class="hidden bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl mb-4 text-sm flex gap-2">
-                <span>⚠️</span>
-                <span id="alert-message">Username atau password salah.</span>
-            </div>
+            @if ($errors->any())
+                <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl mb-4 text-sm flex gap-2">
+                    <span>⚠️</span>
+                    <span>{{ $errors->first() }}</span>
+                </div>
+            @endif
 
             {{-- Form Login --}}
-            <form id="form-login" class="space-y-5">
+            <form method="POST" action="{{ route('login.attempt') }}" class="space-y-5">
+                @csrf
 
                 {{-- Username --}}
                 <div>
@@ -50,12 +55,11 @@
                         Username
                     </label>
                     <div class="relative">
-                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400">
-                            👤
-                        </span>
-                        <input type="text" id="username" required autofocus
-                               placeholder="admin atau kasir"
-                               autocomplete="username"
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400">👤</span>
+                        <input type="text" id="username" name="username"
+                               value="{{ old('username') }}"
+                               required autofocus
+                               placeholder="Masukkan username Anda"
                                class="w-full pl-12 pr-4 py-3 border border-neutral-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition">
                     </div>
                 </div>
@@ -66,16 +70,14 @@
                         Password
                     </label>
                     <div class="relative">
-                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400">
-                            🔒
-                        </span>
-                        <input type="password" id="password" required
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400">🔒</span>
+                        <input type="password" id="password" name="password"
+                               required
                                placeholder="••••••••"
-                               autocomplete="current-password"
                                class="w-full pl-12 pr-12 py-3 border border-neutral-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition">
                         <button type="button" onclick="togglePassword()"
                                 class="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-600 p-1">
-                            <svg id="eye-icon" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                             </svg>
@@ -86,7 +88,7 @@
                 {{-- Remember + Lupa Password --}}
                 <div class="flex items-center justify-between">
                     <div class="flex items-center">
-                        <input type="checkbox" id="remember"
+                        <input type="checkbox" id="remember" name="remember"
                                class="w-4 h-4 text-green-600 border-neutral-300 rounded focus:ring-green-500">
                         <label for="remember" class="ml-2 text-sm text-neutral-600">Ingat saya</label>
                     </div>
@@ -97,35 +99,19 @@
                 </div>
 
                 {{-- Submit --}}
-                <button type="submit" id="btn-submit"
-                        class="w-full px-4 py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl transition shadow-lg shadow-green-600/20 flex items-center justify-center gap-2">
-                    <span>Masuk</span>
+                <button type="submit"
+                        class="w-full px-4 py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl transition shadow-lg shadow-green-600/20">
+                    Masuk
                 </button>
             </form>
 
-            {{-- Info Akun Demo --}}
+            {{-- Info --}}
             <div class="mt-6 pt-6 border-t border-neutral-100">
-                <p class="text-xs text-neutral-500 text-center mb-3 font-semibold">🔑 AKUN DEMO</p>
-                <div class="grid grid-cols-2 gap-3 text-xs">
-                    <button type="button" onclick="isiDemo('admin')"
-                            class="bg-green-50 hover:bg-green-100 border border-green-100 rounded-lg p-3 text-left transition">
-                        <div class="font-bold text-green-800 mb-1">👨‍💼 Admin</div>
-                        <div class="text-neutral-600">Username: <strong>admin</strong></div>
-                        <div class="text-neutral-600">Password: <strong>admin123</strong></div>
-                    </button>
-                    <button type="button" onclick="isiDemo('kasir')"
-                            class="bg-blue-50 hover:bg-blue-100 border border-blue-100 rounded-lg p-3 text-left transition">
-                        <div class="font-bold text-blue-800 mb-1">👨‍💻 Kasir</div>
-                        <div class="text-neutral-600">Username: <strong>kasir</strong></div>
-                        <div class="text-neutral-600">Password: <strong>kasir123</strong></div>
-                    </button>
-                </div>
-                <p class="text-xs text-neutral-400 text-center mt-3">
-                    💡 Klik salah satu untuk mengisi otomatis
+                <p class="text-xs text-neutral-500 text-center">
+                    Belum punya akun? Hubungi <strong>Administrator</strong> toko.
                 </p>
             </div>
 
-            {{-- Kembali ke Beranda --}}
             <div class="mt-6 text-center">
                 <a href="{{ url('/') }}" class="text-sm text-neutral-500 hover:text-green-600 transition">
                     ← Kembali ke Beranda
@@ -139,131 +125,10 @@
     </div>
 
     <script>
-    // ============================================
-    // Kredensial Demo (Frontend Only)
-    // ============================================
-    const USERS = {
-        'admin': { password: 'admin123', role: 'admin', name: 'Admin SIMANTAP', redirect: '/admin/dashboard' },
-        'kasir': { password: 'kasir123', role: 'kasir', name: 'Kasir SIMANTAP', redirect: '/kasir/dashboard' }
-    };
-
-    // ============================================
-    // Toggle Password Visibility
-    // ============================================
     function togglePassword() {
         const input = document.getElementById('password');
         input.type = input.type === 'password' ? 'text' : 'password';
     }
-
-    // ============================================
-    // Isi Form Otomatis (Demo Button)
-    // ============================================
-    function isiDemo(role) {
-        if (role === 'admin') {
-            document.getElementById('username').value = 'admin';
-            document.getElementById('password').value = 'admin123';
-        } else if (role === 'kasir') {
-            document.getElementById('username').value = 'kasir';
-            document.getElementById('password').value = 'kasir123';
-        }
-        hideError();
-        document.getElementById('password').focus();
-    }
-
-    // ============================================
-    // Show / Hide Error
-    // ============================================
-    function showError(message) {
-        document.getElementById('alert-message').textContent = message;
-        document.getElementById('alert-error').classList.remove('hidden');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function hideError() {
-        document.getElementById('alert-error').classList.add('hidden');
-    }
-
-    // ============================================
-    // Cek Notifikasi Reset Password (?reset=success)
-    // ============================================
-    document.addEventListener('DOMContentLoaded', () => {
-        const params = new URLSearchParams(window.location.search);
-        if (params.get('reset') === 'success') {
-            document.getElementById('alert-success').classList.remove('hidden');
-            // Bersihkan query string dari URL
-            window.history.replaceState({}, '', '{{ url("/login") }}');
-            // Auto-hide setelah 8 detik
-            setTimeout(() => {
-                document.getElementById('alert-success').classList.add('hidden');
-            }, 8000);
-        }
-    });
-
-    // ============================================
-    // Handle Submit Login
-    // ============================================
-    document.getElementById('form-login').addEventListener('submit', (e) => {
-        e.preventDefault();
-        hideError();
-
-        const username = document.getElementById('username').value.trim().toLowerCase();
-        const password = document.getElementById('password').value;
-        const btn = document.getElementById('btn-submit');
-
-        // Validasi input kosong
-        if (!username) {
-            showError('Username wajib diisi.');
-            return;
-        }
-
-        if (!password) {
-            showError('Password wajib diisi.');
-            return;
-        }
-
-        // Loading state
-        btn.disabled = true;
-        btn.innerHTML = '<span>⏳</span> Memproses...';
-
-        // Simulasi delay 600ms
-        setTimeout(() => {
-            const user = USERS[username];
-
-            if (!user) {
-                showError('Username tidak terdaftar. Coba gunakan akun demo di bawah.');
-                btn.disabled = false;
-                btn.innerHTML = '<span>Masuk</span>';
-                return;
-            }
-
-            if (user.password !== password) {
-                showError('Password salah. Silakan cek kembali atau klik "Lupa Password?".');
-                btn.disabled = false;
-                btn.innerHTML = '<span>Masuk</span>';
-                return;
-            }
-
-            // Login berhasil — simpan session dummy
-            localStorage.setItem('simantap_user', JSON.stringify({
-                username: username,
-                name: user.name,
-                role: user.role,
-                logged_at: new Date().toISOString()
-            }));
-
-            btn.innerHTML = '<span>✅</span> Berhasil! Mengalihkan...';
-            setTimeout(() => {
-                window.location.href = user.redirect;
-            }, 500);
-
-        }, 600);
-    });
-
-    // ============================================
-    // Hide Error Ketika User Mulai Mengetik
-    // ============================================
-    document.getElementById('username').addEventListener('input', hideError);
-    document.getElementById('password').addEventListener('input', hideError);
     </script>
 </body>
 </html>
