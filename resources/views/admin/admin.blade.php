@@ -1,67 +1,385 @@
 <!DOCTYPE html>
+
 <html lang="id">
+
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>@yield('title', 'Admin - SIMANTAP')</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+
+```
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>@yield('title', 'Admin - SIMANTAP')</title>
+
+<!-- Font Awesome -->
+<link href="{{ asset('admin/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet">
+
+<!-- SB Admin 2 CSS -->
+<link href="{{ asset('admin/css/sb-admin-2.min.css') }}" rel="stylesheet">
+```
+
 </head>
-<body class="bg-neutral-100 min-h-screen">
-    <div class="flex min-h-screen">
 
-        <aside class="w-64 bg-green-800 text-white flex flex-col fixed h-full">
-            <div class="p-6 border-b border-green-700">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center text-xl">🌾</div>
-                    <div>
-                        <div class="font-bold text-lg">SIMANTAP</div>
-                        <div class="text-xs text-green-200">Admin Panel</div>
-                    </div>
-                </div>
+<body id="page-top">
+
+```
+<!-- Page Wrapper -->
+<div id="wrapper">
+
+    <!-- Sidebar -->
+    <ul class="navbar-nav bg-gradient-success sidebar sidebar-dark accordion" id="accordionSidebar">
+
+        <!-- Brand -->
+        <a class="sidebar-brand d-flex align-items-center justify-content-center"
+           href="/admin/dashboard">
+
+            <div class="sidebar-brand-icon rotate-n-15">
+                <i class="fas fa-seedling"></i>
             </div>
 
-            <nav class="flex-1 p-4 space-y-1">
-                <a href="/admin/dashboard" class="flex items-center gap-3 px-4 py-3 rounded-lg bg-green-700">
-                    <span>📊</span> Dashboard
-                </a>
-                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg opacity-50 cursor-not-allowed">
-                    <span>📦</span> Produk <span class="text-xs ml-auto">(soon)</span>
-                </a>
-                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg opacity-50 cursor-not-allowed">
-                    <span>🛒</span> Pesanan <span class="text-xs ml-auto">(soon)</span>
-                </a>
-            </nav>
+            <div class="sidebar-brand-text mx-3">
+                SIMANTAP
+            </div>
 
-            <div class="p-4 border-t border-green-700">
-                <div class="bg-green-900/50 rounded-lg p-3 mb-3">
-                    <div id="user-name" class="text-sm font-semibold truncate">Admin</div>
-                    <div class="text-xs text-green-300">👨‍💼 Administrator</div>
-                </div>
-                <button onclick="logout()"
-                        class="w-full px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-semibold rounded-lg transition">
-                    🚪 Logout
+        </a>
+
+        <!-- Divider -->
+        <hr class="sidebar-divider my-0">
+
+        <!-- Dashboard -->
+        <li class="nav-item active">
+
+            <a class="nav-link" href="/admin/dashboard">
+
+                <i class="fas fa-fw fa-tachometer-alt"></i>
+
+                <span>Dashboard</span>
+
+            </a>
+
+        </li>
+
+        <!-- Divider -->
+        <hr class="sidebar-divider">
+
+        <!-- Heading -->
+        <div class="sidebar-heading">
+            Data Master
+        </div>
+
+        <!-- Produk -->
+        <li class="nav-item">
+
+            <a class="nav-link" href="#">
+
+                <i class="fas fa-box"></i>
+
+                <span>Produk</span>
+
+            </a>
+
+        </li>
+
+        <!-- Supplier -->
+        <li class="nav-item">
+
+            <a class="nav-link" href="#">
+
+                <i class="fas fa-truck"></i>
+
+                <span>Supplier</span>
+
+            </a>
+
+        </li>
+
+        <!-- Pengguna -->
+        <li class="nav-item">
+
+            <a class="nav-link" href="#">
+
+                <i class="fas fa-users"></i>
+
+                <span>Pengguna</span>
+
+            </a>
+
+        </li>
+
+        <!-- Divider -->
+        <hr class="sidebar-divider">
+
+        <!-- Heading -->
+        <div class="sidebar-heading">
+            Transaksi
+        </div>
+
+        <!-- Transaksi -->
+        <li class="nav-item">
+
+            <a class="nav-link" href="#">
+
+                <i class="fas fa-shopping-cart"></i>
+
+                <span>Transaksi</span>
+
+            </a>
+
+        </li>
+
+        <!-- Pengeluaran -->
+        <li class="nav-item">
+
+            <a class="nav-link" href="#">
+
+                <i class="fas fa-money-bill-wave"></i>
+
+                <span>Pengeluaran</span>
+
+            </a>
+
+        </li>
+
+        <!-- Divider -->
+        <hr class="sidebar-divider">
+
+        <!-- Laporan -->
+        <li class="nav-item">
+
+            <a class="nav-link" href="#">
+
+                <i class="fas fa-chart-bar"></i>
+
+                <span>Laporan</span>
+
+            </a>
+
+        </li>
+
+        <!-- Divider -->
+        <hr class="sidebar-divider d-none d-md-block">
+
+        <!-- Sidebar Toggler -->
+        <div class="text-center d-none d-md-inline">
+
+            <button class="rounded-circle border-0" id="sidebarToggle"></button>
+
+        </div>
+
+    </ul>
+    <!-- End of Sidebar -->
+
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content">
+
+            <!-- Topbar -->
+            <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+
+                <!-- Sidebar Toggle (Mobile) -->
+                <button id="sidebarToggleTop"
+                        class="btn btn-link d-md-none rounded-circle mr-3">
+
+                    <i class="fa fa-bars"></i>
+
                 </button>
-            </div>
-        </aside>
 
-        <main class="flex-1 ml-64">
-            <header class="bg-white shadow-sm border-b border-neutral-200 px-8 py-4">
-                <h1 class="text-xl font-bold text-neutral-800">@yield('page-title', 'Dashboard')</h1>
-                <p class="text-sm text-neutral-500">@yield('page-subtitle', 'Selamat datang di panel admin')</p>
-            </header>
-            <div class="p-8">
+                <!-- Page Title -->
+                <div>
+
+                    <h1 class="h3 mb-0 text-gray-800">
+                        @yield('page-title', 'Dashboard')
+                    </h1>
+
+                    <small class="text-muted">
+                        @yield('page-subtitle', 'Selamat datang di panel admin')
+                    </small>
+
+                </div>
+
+
+                <!-- Topbar Navbar -->
+                <ul class="navbar-nav ml-auto">
+
+                    <!-- User -->
+                    <li class="nav-item dropdown no-arrow">
+
+                        <a class="nav-link dropdown-toggle"
+                           href="#"
+                           id="userDropdown"
+                           role="button"
+                           data-toggle="dropdown">
+
+                            <span class="mr-2 d-none d-lg-inline text-gray-600 small">
+                                <span id="user-name">Admin</span>
+                            </span>
+
+                            <i class="fas fa-user-circle fa-2x text-gray-400"></i>
+
+                        </a>
+
+                        <!-- Dropdown -->
+                        <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                             aria-labelledby="userDropdown">
+
+                            <a class="dropdown-item" href="#">
+                                <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                                Profil
+                            </a>
+
+                            <div class="dropdown-divider"></div>
+
+                            <a class="dropdown-item"
+                               href="#"
+                               onclick="logout(); return false;">
+
+                                <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+
+                                Logout
+
+                            </a>
+
+                        </div>
+
+                    </li>
+
+                </ul>
+
+            </nav>
+            <!-- End of Topbar -->
+
+
+            <!-- Page Content -->
+            <div class="container-fluid">
+
                 @yield('content')
+
             </div>
-        </main>
+            <!-- End of Page Content -->
+
+        </div>
+        <!-- End of Main Content -->
+
+
+        <!-- Footer -->
+        <footer class="sticky-footer bg-white">
+
+            <div class="container my-auto">
+
+                <div class="copyright text-center my-auto">
+
+                    <span>
+                        © {{ date('Y') }} SIMANTAP - Sistem Informasi Manajemen Toko
+                    </span>
+
+                </div>
+
+            </div>
+
+        </footer>
+        <!-- End of Footer -->
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+</div>
+<!-- End of Page Wrapper -->
+
+
+<!-- Scroll to Top -->
+<a class="scroll-to-top rounded" href="#page-top">
+
+    <i class="fas fa-angle-up"></i>
+
+</a>
+
+
+<!-- Logout Modal -->
+<div class="modal fade"
+     id="logoutModal"
+     tabindex="-1"
+     role="dialog">
+
+    <div class="modal-dialog" role="document">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h5 class="modal-title">
+                    Siap untuk keluar?
+                </h5>
+
+                <button class="close"
+                        type="button"
+                        data-dismiss="modal">
+
+                    <span>×</span>
+
+                </button>
+
+            </div>
+
+            <div class="modal-body">
+
+                Pilih "Logout" jika kamu ingin keluar dari halaman admin.
+
+            </div>
+
+            <div class="modal-footer">
+
+                <button class="btn btn-secondary"
+                        type="button"
+                        data-dismiss="modal">
+
+                    Batal
+
+                </button>
+
+                <a class="btn btn-danger"
+                   href="#"
+                   onclick="logout(); return false;">
+
+                    Logout
+
+                </a>
+
+            </div>
+
+        </div>
+
     </div>
 
-    <script>
+</div>
+
+
+<!-- jQuery -->
+<script src="{{ asset('admin/vendor/jquery/jquery.min.js') }}"></script>
+
+<!-- Bootstrap -->
+<script src="{{ asset('admin/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+
+<!-- SB Admin 2 JS -->
+<script src="{{ asset('admin/js/sb-admin-2.min.js') }}"></script>
+
+
+<script>
     function logout() {
+
         if (confirm('Yakin ingin logout?')) {
+
             localStorage.removeItem('simantap_user');
+
             window.location.href = '/login';
+
         }
+
     }
-    </script>
+</script>
+```
+
 </body>
+
 </html>
