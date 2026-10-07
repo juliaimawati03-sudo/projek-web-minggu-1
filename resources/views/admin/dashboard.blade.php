@@ -1,317 +1,105 @@
 @extends('layouts.admin')
 
-@section('title', 'Dashboard')
-@section('page-title', 'Dashboard')
-@section('page-subtitle', 'Ringkasan aktivitas toko alat pertanian hari ini')
+@section('title', 'Detail Transaksi')
+@section('page-title', 'Detail Transaksi')
+@section('page-desc', 'Informasi lengkap transaksi dan produk yang dibeli')
 
 @section('content')
 
-<!-- Statistik -->
-
-<div class="row">
-
-```
-<!-- Transaksi Hari Ini -->
-<div class="col-xl-3 col-md-6 mb-4">
-
-    <div class="card border-left-primary shadow h-100 py-2">
-
-        <div class="card-body">
-
-            <div class="row no-gutters align-items-center">
-
-                <div class="col mr-2">
-
-                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                        Transaksi Hari Ini
-                    </div>
-
-                    <div class="h5 mb-0 font-weight-bold text-gray-800">
-                        {{ $totalTransaksiHariIni ?? 18 }}
-                    </div>
-
-                    <div class="text-xs text-success mt-2">
-                        <i class="fas fa-arrow-up"></i>
-                        +12% dari kemarin
-                    </div>
-
-                </div>
-
-                <div class="col-auto">
-                    <i class="fas fa-receipt fa-2x text-gray-300"></i>
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- Pemasukan -->
-<div class="col-xl-3 col-md-6 mb-4">
-
-    <div class="card border-left-success shadow h-100 py-2">
-
-        <div class="card-body">
-
-            <div class="row no-gutters align-items-center">
-
-                <div class="col mr-2">
-
-                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                        Pemasukan Hari Ini
-                    </div>
-
-                    <div class="h5 mb-0 font-weight-bold text-gray-800">
-                        Rp {{ number_format($pemasukanHariIni ?? 2450000, 0, ',', '.') }}
-                    </div>
-
-                    <div class="text-xs text-gray-500 mt-2">
-                        Dari {{ $totalTransaksiHariIni ?? 18 }} transaksi
-                    </div>
-
-                </div>
-
-                <div class="col-auto">
-                    <i class="fas fa-money-bill-wave fa-2x text-gray-300"></i>
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- Pengeluaran -->
-<div class="col-xl-3 col-md-6 mb-4">
-
-    <div class="card border-left-danger shadow h-100 py-2">
-
-        <div class="card-body">
-
-            <div class="row no-gutters align-items-center">
-
-                <div class="col mr-2">
-
-                    <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                        Pengeluaran Hari Ini
-                    </div>
-
-                    <div class="h5 mb-0 font-weight-bold text-gray-800">
-                        Rp {{ number_format($pengeluaranHariIni ?? 850000, 0, ',', '.') }}
-                    </div>
-
-                    <div class="text-xs text-gray-500 mt-2">
-                        Pembelian ke supplier
-                    </div>
-
-                </div>
-
-                <div class="col-auto">
-                    <i class="fas fa-wallet fa-2x text-gray-300"></i>
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- Stok Menipis -->
-<div class="col-xl-3 col-md-6 mb-4">
-
-    <div class="card border-left-warning shadow h-100 py-2">
-
-        <div class="card-body">
-
-            <div class="row no-gutters align-items-center">
-
-                <div class="col mr-2">
-
-                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                        Stok Menipis
-                    </div>
-
-                    <div class="h5 mb-0 font-weight-bold text-gray-800">
-                        {{ $produkStokMenipis ?? 4 }} Produk
-                    </div>
-
-                    <div class="text-xs text-gray-500 mt-2">
-                        Stok di bawah 10 unit
-                    </div>
-
-                </div>
-
-                <div class="col-auto">
-                    <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-```
-
-</div>
-
-<!-- Transaksi Terbaru -->
-
-<div class="card shadow mb-4">
-
-```
-<!-- Header -->
-<div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-
-    <h6 class="m-0 font-weight-bold text-primary">
-        Transaksi Terbaru
-    </h6>
-
-    <a href="{{ route('admin.transaksi.index') }}"
-       class="btn btn-sm btn-primary">
-
-        Lihat Semua
-        <i class="fas fa-arrow-right ml-1"></i>
-
+    <a href="{{ route('admin.transaksi.index') }}" class="btn btn-sm btn-secondary mb-3">
+        <i class="fas fa-arrow-left mr-1"></i> Kembali
     </a>
 
-</div>
+    <div class="row">
 
+        {{-- Info Transaksi --}}
+        <div class="col-lg-4 mb-4">
+            <div class="card shadow">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        #TRX-{{ str_pad($transaksi['id'] ?? 124, 4, '0', STR_PAD_LEFT) }}
+                    </h6>
+                    <span class="badge badge-success">Selesai</span>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3 d-flex justify-content-between">
+                        <span class="text-muted">Kasir</span>
+                        <span class="font-weight-bold">{{ $transaksi['kasir'] ?? 'Siti Aminah' }}</span>
+                    </div>
+                    <div class="mb-3 d-flex justify-content-between">
+                        <span class="text-muted">Tanggal</span>
+                        <span class="font-weight-bold">{{ $transaksi['tanggal'] ?? '25 Sep 2026, 10:12' }}</span>
+                    </div>
+                    <hr>
+                    <div class="mb-3 d-flex justify-content-between">
+                        <span class="text-muted">Total Harga</span>
+                        <span class="font-weight-bold">Rp {{ number_format($transaksi['total'] ?? 350000, 0, ',', '.') }}</span>
+                    </div>
+                    <div class="mb-3 d-flex justify-content-between">
+                        <span class="text-muted">Nominal Bayar</span>
+                        <span class="font-weight-bold">Rp {{ number_format($transaksi['bayar'] ?? 400000, 0, ',', '.') }}</span>
+                    </div>
+                    <div class="mb-0 d-flex justify-content-between">
+                        <span class="text-muted">Kembalian</span>
+                        <span class="font-weight-bold">Rp {{ number_format($transaksi['kembali'] ?? 50000, 0, ',', '.') }}</span>
+                    </div>
 
-<!-- Table -->
-<div class="card-body">
+                    <hr>
+                    <button class="btn btn-primary btn-block">
+                        <i class="fas fa-print mr-1"></i> Cetak Struk
+                    </button>
+                </div>
+            </div>
+        </div>
 
-    <div class="table-responsive">
-
-        <table class="table table-bordered table-hover" width="100%" cellspacing="0">
-
-            <thead class="thead-light">
-
-                <tr>
-
-                    <th>ID Transaksi</th>
-                    <th>Kasir</th>
-                    <th>Tanggal</th>
-                    <th>Total</th>
-                    <th>Status</th>
-
-                </tr>
-
-            </thead>
-
-            <tbody>
-
-                @forelse(($transaksiTerbaru ?? []) as $t)
-
-                <tr>
-
-                    <td class="font-weight-bold">
-                        #TRX-{{ str_pad($t->id, 4, '0', STR_PAD_LEFT) }}
-                    </td>
-
-                    <td>
-                        {{ $t->kasir->nama ?? '-' }}
-                    </td>
-
-                    <td>
-                        {{ \Carbon\Carbon::parse($t->tanggal_transaksi)->format('d M Y, H:i') }}
-                    </td>
-
-                    <td class="font-weight-bold">
-                        Rp {{ number_format($t->total_harga, 0, ',', '.') }}
-                    </td>
-
-                    <td>
-
-                        <span class="badge badge-success">
-                            <i class="fas fa-check mr-1"></i>
-                            Selesai
-                        </span>
-
-                    </td>
-
-                </tr>
-
-                @empty
-
-                <!-- Data contoh -->
-                <tr>
-
-                    <td class="font-weight-bold">
-                        #TRX-0124
-                    </td>
-
-                    <td>
-                        Siti Aminah
-                    </td>
-
-                    <td>
-                        25 Sep 2026, 10:12
-                    </td>
-
-                    <td class="font-weight-bold">
-                        Rp 350.000
-                    </td>
-
-                    <td>
-                        <span class="badge badge-success">
-                            <i class="fas fa-check mr-1"></i>
-                            Selesai
-                        </span>
-                    </td>
-
-                </tr>
-
-
-                <tr>
-
-                    <td class="font-weight-bold">
-                        #TRX-0123
-                    </td>
-
-                    <td>
-                        Budi Santoso
-                    </td>
-
-                    <td>
-                        25 Sep 2026, 09:47
-                    </td>
-
-                    <td class="font-weight-bold">
-                        Rp 1.250.000
-                    </td>
-
-                    <td>
-                        <span class="badge badge-success">
-                            <i class="fas fa-check mr-1"></i>
-                            Selesai
-                        </span>
-                    </td>
-
-                </tr>
-
-                @endforelse
-
-            </tbody>
-
-        </table>
+        {{-- Rincian Produk --}}
+        <div class="col-lg-8 mb-4">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Rincian Produk</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" width="100%">
+                            <thead>
+                                <tr>
+                                    <th>Produk</th>
+                                    <th>Jumlah</th>
+                                    <th>Harga Satuan</th>
+                                    <th>Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @php
+                                    $items = [
+                                        ['produk'=>'Cangkul Baja EGA','jumlah'=>2,'harga'=>85000],
+                                        ['produk'=>'Pupuk NPK Mutiara 1kg','jumlah'=>4,'harga'=>35000],
+                                        ['produk'=>'Benih Cabai Hibrida','jumlah'=>1,'harga'=>40000],
+                                    ];
+                                @endphp
+                                @foreach(($detailTransaksi ?? $items) as $d)
+                                <tr>
+                                    <td class="font-weight-bold">{{ $d['produk'] }}</td>
+                                    <td>{{ $d['jumlah'] }}</td>
+                                    <td>Rp {{ number_format($d['harga'], 0, ',', '.') }}</td>
+                                    <td class="font-weight-bold">Rp {{ number_format($d['jumlah'] * $d['harga'], 0, ',', '.') }}</td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                            <tfoot>
+                                <tr class="bg-light">
+                                    <td colspan="3" class="text-right font-weight-bold">Total</td>
+                                    <td class="font-weight-bold text-primary">
+                                        Rp {{ number_format($transaksi['total'] ?? 350000, 0, ',', '.') }}
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
 
     </div>
-
-</div>
-```
-
-</div>
 
 @endsection

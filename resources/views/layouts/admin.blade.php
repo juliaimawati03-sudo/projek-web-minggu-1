@@ -1,170 +1,222 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>@yield('title', 'Admin') | SIMANTAP</title>
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: { sans: ['Inter', 'sans-serif'] },
-                    colors: {
-                        primary: {
-                            dark: '#15803D',
-                            DEFAULT: '#16A34A',
-                            light: '#22C55E',
-                            xlight: '#DCFCE7',
-                            pale: '#F0FDF4',
-                        },
-                    },
-                }
-            }
-        }
-    </script>
-    <style> body { font-family: 'Inter', sans-serif; } </style>
+    <link href="{{ asset('vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+    <link href="{{ asset('css/sb-admin-2.min.css') }}" rel="stylesheet">
+
     @stack('styles')
 </head>
-<body class="bg-neutral-50 text-neutral-700 antialiased">
+<body id="page-top">
 
-    <div x-data="{ sidebarOpen: false }" class="flex min-h-screen">
+    <div id="wrapper">
 
-        <!-- Sidebar -->
-        <aside class="fixed inset-y-0 left-0 z-30 w-64 bg-green-800 border-r border-green-700 flex flex-col
-                       transform -translate-x-full lg:translate-x-0 transition-transform duration-200"
-               :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'">
+        {{-- Sidebar --}}
+        <ul class="navbar-nav sidebar sidebar-dark accordion" id="accordionSidebar" style="background: linear-gradient(180deg, #15803d 10%, #166534 100%);">
 
-            <!-- Brand -->
-            <div class="flex items-center gap-3 px-6 h-16 border-b border-green-700">
-                <div class="w-9 h-9 rounded-lg bg-primary-light flex items-center justify-center font-bold text-green-900">S</div>
-                <div>
-                    <p class="text-white font-semibold leading-none">SIMANTAP</p>
-                    <p class="text-green-200 text-xs mt-1">Panel Admin</p>
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('admin.dashboard') }}">
+                <div class="sidebar-brand-icon rotate-n-15">
+                    <i class="fas fa-seedling"></i>
                 </div>
+                <div class="sidebar-brand-text mx-3">SIMANTAP</div>
+            </a>
+
+            <hr class="sidebar-divider my-0">
+
+            <li class="nav-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('admin.dashboard') }}">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+
+            <hr class="sidebar-divider">
+
+            <div class="sidebar-heading">Menu Utama</div>
+
+            <li class="nav-item {{ request()->routeIs('admin.transaksi.*') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('admin.transaksi.index') }}">
+                    <i class="fas fa-fw fa-receipt"></i>
+                    <span>Transaksi Penjualan</span>
+                </a>
+            </li>
+
+            <li class="nav-item {{ request()->routeIs('admin.pembelian.*') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('admin.pembelian.create') }}">
+                    <i class="fas fa-fw fa-shopping-cart"></i>
+                    <span>Pembelian Supplier</span>
+                </a>
+            </li>
+
+            <hr class="sidebar-divider">
+
+            <div class="sidebar-heading">Data Master</div>
+
+            <li class="nav-item {{ request()->routeIs('admin.produk.*') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('admin.produk.index') }}">
+                    <i class="fas fa-fw fa-box"></i>
+                    <span>Produk</span>
+                </a>
+            </li>
+
+            <li class="nav-item {{ request()->routeIs('admin.supplier.*') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('admin.supplier.index') }}">
+                    <i class="fas fa-fw fa-truck"></i>
+                    <span>Supplier</span>
+                </a>
+            </li>
+
+            <li class="nav-item {{ request()->routeIs('admin.pengguna.*') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('admin.pengguna.index') }}">
+                    <i class="fas fa-fw fa-users"></i>
+                    <span>Pengguna</span>
+                </a>
+            </li>
+
+            <hr class="sidebar-divider">
+
+            <div class="sidebar-heading">Laporan</div>
+
+            <li class="nav-item {{ request()->routeIs('admin.laporan.*') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('admin.laporan.index') }}">
+                    <i class="fas fa-fw fa-chart-line"></i>
+                    <span>Laporan Keuangan</span>
+                </a>
+            </li>
+
+            <hr class="sidebar-divider d-none d-md-block">
+
+            <div class="text-center d-none d-md-inline">
+                <button class="rounded-circle border-0" id="sidebarToggle"></button>
             </div>
 
-            <!-- Nav -->
-            <nav class="flex-1 px-3 py-5 space-y-1 overflow-y-auto">
-                <p class="px-3 text-[11px] font-semibold text-green-200 uppercase tracking-wide mb-2">Menu Utama</p>
+        </ul>
 
-                <a href="{{ route('admin.dashboard') }}"
-                   class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition
-                          {{ request()->routeIs('admin.dashboard') ? 'bg-green-700 text-white' : 'text-green-100 hover:bg-green-700/60' }}">
-                    <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l9-9 9 9M5 10v10a1 1 0 001 1h4a1 1 0 001-1v-4a1 1 0 011-1h0a1 1 0 011 1v4a1 1 0 001 1h4a1 1 0 001-1V10"/></svg>
-                    Dashboard
-                </a>
+        {{-- Content Wrapper --}}
+        <div id="content-wrapper" class="d-flex flex-column">
 
-                <a href="{{ route('admin.transaksi.index') }}"
-                   class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition
-                          {{ request()->routeIs('admin.transaksi.*') ? 'bg-green-700 text-white' : 'text-green-100 hover:bg-green-700/60' }}">
-                    <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 14l6-6m-5-2h6a2 2 0 012 2v10a2 2 0 01-2 2H8a2 2 0 01-2-2V8a2 2 0 012-2z"/></svg>
-                    Transaksi Penjualan
-                </a>
+            <div id="content">
 
-                <a href="{{ route('admin.pembelian.create') }}"
-                   class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition
-                          {{ request()->routeIs('admin.pembelian.*') ? 'bg-green-700 text-white' : 'text-green-100 hover:bg-green-700/60' }}">
-                    <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
-                    Pembelian ke Supplier
-                </a>
+                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
 
-                <p class="px-3 text-[11px] font-semibold text-green-200 uppercase tracking-wide mt-5 mb-2">Data Master</p>
-
-                <a href="{{ route('admin.produk.index') }}"
-                   class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition
-                          {{ request()->routeIs('admin.produk.*') ? 'bg-green-700 text-white' : 'text-green-100 hover:bg-green-700/60' }}">
-                    <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
-                    Produk
-                </a>
-
-                <a href="{{ route('admin.supplier.index') }}"
-                   class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition
-                          {{ request()->routeIs('admin.supplier.*') ? 'bg-green-700 text-white' : 'text-green-100 hover:bg-green-700/60' }}">
-                    <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 21h18M5 21V7l7-4 7 4v14M9 9h1m-1 4h1m4-4h1m-1 4h1M9 21v-4a1 1 0 011-1h4a1 1 0 011 1v4"/></svg>
-                    Supplier
-                </a>
-
-                <a href="{{ route('admin.pengguna.index') }}"
-                   class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition
-                          {{ request()->routeIs('admin.pengguna.*') ? 'bg-green-700 text-white' : 'text-green-100 hover:bg-green-700/60' }}">
-                    <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m5-3.13a4 4 0 100-8 4 4 0 000 8zm6 4a4 4 0 00-3-3.87"/></svg>
-                    Pengguna
-                </a>
-
-                <p class="px-3 text-[11px] font-semibold text-green-200 uppercase tracking-wide mt-5 mb-2">Laporan</p>
-
-                <a href="{{ route('admin.laporan.index') }}"
-                   class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition
-                          {{ request()->routeIs('admin.laporan.*') ? 'bg-green-700 text-white' : 'text-green-100 hover:bg-green-700/60' }}">
-                    <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-6m4 6V7m4 10v-3M5 21h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
-                    Laporan Keuangan
-                </a>
-            </nav>
-
-            <!-- User card -->
-            <div class="p-3 border-t border-green-700">
-                <div class="flex items-center gap-3 rounded-lg px-3 py-3" style="background-color: rgba(20,83,45,0.5);">
-                    <div class="w-9 h-9 rounded-full bg-primary-light flex items-center justify-center text-sm font-semibold text-green-900">
-                        {{ strtoupper(substr(auth()->user()->nama ?? 'A', 0, 1)) }}
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <p class="text-white text-sm font-medium truncate">{{ auth()->user()->nama ?? 'Admin' }}</p>
-                        <p class="text-green-200 text-xs truncate">{{ ucfirst(auth()->user()->role ?? 'admin') }}</p>
-                    </div>
-                </div>
-                <form method="POST" action="{{ route('logout') }}" class="mt-2">
-                    @csrf
-                    <button type="submit"
-                        class="w-full flex items-center justify-center gap-2 rounded-lg bg-red-600 hover:bg-red-700 text-white text-sm font-medium py-2.5 transition">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
-                        Keluar
+                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                        <i class="fa fa-bars"></i>
                     </button>
-                </form>
+
+                    <ul class="navbar-nav ml-auto">
+
+                        <li class="nav-item dropdown no-arrow">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">
+                                    {{ auth()->user()->nama ?? 'Admin' }}
+                                </span>
+                                <i class="fas fa-user-circle fa-2x text-gray-300"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                 aria-labelledby="userDropdown">
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <button type="submit" class="dropdown-item">
+                                        <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                                        Logout
+                                    </button>
+                                </form>
+                            </div>
+                        </li>
+
+                    </ul>
+
+                </nav>
+
+                <div class="container-fluid">
+
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <div>
+                            <h1 class="h3 mb-0 text-gray-800">@yield('page-title', 'Dashboard')</h1>
+                            <p class="mb-0 text-muted small">@yield('page-desc', '')</p>
+                        </div>
+                    </div>
+
+                    @if(session('success'))
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="fas fa-check-circle mr-2"></i>
+                            {{ session('success') }}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    @endif
+
+                    @if($errors->any())
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="fas fa-exclamation-circle mr-2"></i>
+                            <ul class="mb-0 pl-3">
+                                @foreach($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    @endif
+
+                    @yield('content')
+
+                </div>
+
             </div>
-        </aside>
 
-        <!-- Mobile overlay -->
-        <div x-show="sidebarOpen" @click="sidebarOpen = false" class="fixed inset-0 bg-black/40 z-20 lg:hidden"></div>
+            <footer class="sticky-footer bg-white">
+                <div class="container my-auto">
+                    <div class="copyright text-center my-auto">
+                        <span>© {{ date('Y') }} SIMANTAP. All rights reserved.</span>
+                    </div>
+                </div>
+            </footer>
 
-        <!-- Main content -->
-        <div class="flex-1 lg:ml-64 flex flex-col min-h-screen">
-            <header class="h-16 bg-white border-b border-neutral-200 flex items-center justify-between px-4 sm:px-6 sticky top-0 z-10">
-                <div class="flex items-center gap-3">
-                    <button @click="sidebarOpen = true" class="lg:hidden text-neutral-500">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </div>
+
+    </div>
+
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Yakin ingin logout?</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
                     </button>
-                    <div>
-                        <h1 class="text-neutral-800 font-semibold text-lg leading-none">@yield('page-title', 'Dashboard')</h1>
-                        <p class="text-neutral-500 text-xs mt-1">@yield('page-desc', '')</p>
-                    </div>
                 </div>
-                <div class="flex items-center gap-3">
-                    <span class="hidden sm:inline text-sm text-neutral-500">{{ now()->translatedFormat('l, d F Y') }}</span>
-                    <div class="w-9 h-9 rounded-full bg-primary-xlight text-primary-dark flex items-center justify-center font-semibold text-sm">
-                        {{ strtoupper(substr(auth()->user()->nama ?? 'A', 0, 1)) }}
-                    </div>
+                <div class="modal-body">Pilih "Logout" jika Anda yakin ingin keluar.</div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Batal</button>
+                    <form method="POST" action="{{ route('logout') }}" class="d-inline">
+                        @csrf
+                        <button type="submit" class="btn btn-danger">Logout</button>
+                    </form>
                 </div>
-            </header>
-
-            <main class="flex-1 p-4 sm:p-6">
-                @if(session('success'))
-                    <div class="mb-4 flex items-center gap-2 rounded-lg bg-primary-xlight border border-primary-light/40 text-primary-dark text-sm px-4 py-3">
-                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-                        {{ session('success') }}
-                    </div>
-                @endif
-
-                @yield('content')
-            </main>
+            </div>
         </div>
     </div>
 
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
+    <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('vendor/jquery-easing/jquery.easing.min.js') }}"></script>
+    <script src="{{ asset('js/sb-admin-2.min.js') }}"></script>
+
     @stack('scripts')
 </body>
 </html>
