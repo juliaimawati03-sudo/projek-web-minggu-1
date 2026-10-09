@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Admin\PenggunaController;
+use App\Http\Controllers\Admin\SupplierController;
 
 // =====================================================
 // PUBLIC
@@ -55,10 +56,12 @@ Route::get('/password-changed', function () {
 // =====================================================
 Route::prefix('admin')->name('admin.')->group(function () {
 
+    // ===== DASHBOARD =====
     Route::get('/dashboard', function () {
         return view('admin.dashboard');
     })->name('dashboard');
 
+    // ===== TRANSAKSI =====
     Route::get('/transaksi', function () {
         return view('admin.transaksi.index');
     })->name('transaksi.index');
@@ -67,6 +70,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         return view('admin.transaksi.show');
     })->name('transaksi.show');
 
+    // ===== PEMBELIAN =====
     Route::get('/pembelian', function () {
         return view('admin.pembelian.create');
     })->name('pembelian.create');
@@ -75,6 +79,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // Backend nanti
     })->name('pembelian.store');
 
+    // ===== PRODUK =====
     Route::get('/produk', function () {
         return view('admin.produk.index');
     })->name('produk.index');
@@ -83,20 +88,19 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // Backend nanti
     })->name('produk.store');
 
-    Route::get('/supplier', function () {
-        return view('admin.supplier.index');
-    })->name('supplier.index');
-
-    Route::post('/supplier', function () {
-        // Backend nanti
-    })->name('supplier.store');
+    // ===== SUPPLIER — PAKAI CONTROLLER =====
+    Route::get('/supplier',           [SupplierController::class, 'index'])  ->name('supplier.index');
+    Route::post('/supplier',          [SupplierController::class, 'store'])  ->name('supplier.store');
+    Route::put('/supplier/{id}',      [SupplierController::class, 'update']) ->name('supplier.update');
+    Route::delete('/supplier/{id}',   [SupplierController::class, 'destroy'])->name('supplier.destroy');
 
     // ===== PENGGUNA — PAKAI CONTROLLER =====
-    Route::get('/pengguna', [PenggunaController::class, 'index'])->name('pengguna.index');
-    Route::post('/pengguna', [PenggunaController::class, 'store'])->name('pengguna.store');
-    Route::put('/pengguna/{id}', [PenggunaController::class, 'update'])->name('pengguna.update');
-    Route::delete('/pengguna/{id}', [PenggunaController::class, 'destroy'])->name('pengguna.destroy');
+    Route::get('/pengguna',           [PenggunaController::class, 'index'])  ->name('pengguna.index');
+    Route::post('/pengguna',          [PenggunaController::class, 'store'])  ->name('pengguna.store');
+    Route::put('/pengguna/{id}',      [PenggunaController::class, 'update']) ->name('pengguna.update');
+    Route::delete('/pengguna/{id}',   [PenggunaController::class, 'destroy'])->name('pengguna.destroy');
 
+    // ===== LAPORAN =====
     Route::get('/laporan', function () {
         return view('admin.laporan.index');
     })->name('laporan.index');
