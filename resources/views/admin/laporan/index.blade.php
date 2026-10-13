@@ -6,7 +6,28 @@
 
 @section('content')
 
-    {{-- Filter Periode --}}
+    {{-- Alert Sukses --}}
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show">
+            <i class="fas fa-check-circle mr-2"></i> {{ session('success') }}
+            <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
+        </div>
+    @endif
+
+    {{-- Alert Error --}}
+    @if($errors->any())
+        <div class="alert alert-danger alert-dismissible fade show">
+            <i class="fas fa-exclamation-circle mr-2"></i>
+            <ul class="mb-0 pl-3">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+            <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
+        </div>
+    @endif
+
+    {{-- FILTER PERIODE --}}
     <div class="card shadow mb-4">
         <div class="card-body">
             <form method="GET" action="{{ route('admin.laporan.index') }}" class="form-inline">
@@ -16,14 +37,18 @@
                 <span class="mr-2 mb-2">s/d</span>
                 <input type="date" name="sampai" class="form-control mr-2 mb-2"
                        value="{{ $sampai ?? now()->format('Y-m-d') }}">
-                <button type="submit" class="btn btn-success mb-2">
+                <button type="submit" class="btn btn-success mb-2 mr-2">
                     <i class="fas fa-search mr-1"></i> Tampilkan
                 </button>
+                <a href="{{ route('admin.laporan.pdf', ['dari' => $dari, 'sampai' => $sampai]) }}"
+                   class="btn btn-danger mb-2" target="_blank">
+                    <i class="fas fa-file-pdf mr-1"></i> Unduh PDF
+                </a>
             </form>
         </div>
     </div>
 
-    {{-- Summary Cards --}}
+    {{-- SUMMARY CARDS --}}
     <div class="row mb-4">
         <div class="col-md-4 mb-3">
             <div class="card border-left-success shadow h-100 py-2">
@@ -84,7 +109,7 @@
         </div>
     </div>
 
-    {{-- Form Input Manual (TANPA Jenis) --}}
+    {{-- FORM INPUT --}}
     <div class="card shadow mb-4">
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">
@@ -92,8 +117,6 @@
             </h6>
         </div>
         <div class="card-body">
-
-            {{-- Info cara isi --}}
             <div class="alert alert-info py-2 small mb-3">
                 <i class="fas fa-info-circle mr-1"></i>
                 <strong>Cara isi:</strong> Untuk <span class="text-success font-weight-bold">Pemasukan</span> ketik angka positif
@@ -131,15 +154,16 @@
         </div>
     </div>
 
-    {{-- Tabel Buku Kas --}}
+    {{-- TABEL BUKU KAS --}}
     <div class="card shadow mb-4">
         <div class="card-header py-3 d-flex justify-content-between align-items-center">
             <h6 class="m-0 font-weight-bold text-primary">
                 <i class="fas fa-book mr-1"></i> Buku Kas — Catatan Keuangan
             </h6>
-            <button class="btn btn-sm btn-success">
-                <i class="fas fa-download mr-1"></i> Unduh Laporan
-            </button>
+            <a href="{{ route('admin.laporan.pdf', ['dari' => $dari, 'sampai' => $sampai]) }}"
+               class="btn btn-sm btn-danger" target="_blank">
+                <i class="fas fa-file-pdf mr-1"></i> Unduh PDF
+            </a>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -153,7 +177,7 @@
                             <th class="text-right" width="130">Debit (Rp)</th>
                             <th class="text-right" width="130">Kredit (Rp)</th>
                             <th class="text-right" width="130">Saldo (Rp)</th>
-                            <th width="60" class="text-center">Aksi</th>
+                            <th width="100" class="text-center">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -179,7 +203,19 @@
                                     {{ number_format($saldo, 0, ',', '.') }}
                                 </td>
                                 <td class="text-center">
-                                    <form action="{{ route('admin.laporan.destroy', $c->id) }}" method="POST"
+                                    {{-- Tombol Edit --}}
+                                    <button type="button" class="btn btn-sm btn-warning"
+                                            onclick="editCatatan(
+                                                {{ $c->id }},
+                                                '{{ $c->tanggal->format('Y-m-d') }}',
+                                                {{ $c->nominal }},
+                                                '{{ addslashes($c->keterangan) }}'
+                                            )">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+
+                                    {{-- Tombol Hapus --}}
+                                    <form action="{{ route('admin.laporan.destroy', $c->id) }}" method="POST" class="d-inline"
                                           onsubmit="return confirm('Yakin hapus catatan ini?')">
                                         @csrf
                                         @method('DELETE')
@@ -227,4 +263,53 @@
         </div>
     </div>
 
+    {{-- MODAL EDIT --}}
+    <div class="modal fade" id="modalEditCatatan" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="formEditCatatan" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <div class="modal-header">
+                        <h5 class="modal-title">Edit Catatan Keuangan</h5>
+                        <button class="close" type="button" data-dismiss="modal"><span>&times;</span></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Tanggal *</label>
+                            <input type="date" id="editTanggal" name="tanggal" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Nominal (Rp) *</label>
+                            <input type="number" id="editNominal" name="nominal" class="form-control" required>
+                            <small class="text-muted">Positif = pemasukan, Negatif = pengeluaran</small>
+                        </div>
+                        <div class="form-group">
+                            <label>Keterangan *</label>
+                            <input type="text" id="editKeterangan" name="keterangan" class="form-control" required maxlength="500">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-warning">
+                            <i class="fas fa-save mr-1"></i> Update
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
 @endsection
+
+@push('scripts')
+<script>
+function editCatatan(id, tanggal, nominal, keterangan) {
+    document.getElementById('formEditCatatan').action = '/admin/laporan/' + id;
+    document.getElementById('editTanggal').value = tanggal;
+    document.getElementById('editNominal').value = nominal;
+    document.getElementById('editKeterangan').value = keterangan;
+    $('#modalEditCatatan').modal('show');
+}
+</script>
+@endpush

@@ -15,6 +15,7 @@ class Produk extends Model
         'supplier_id',
         'nama_produk',
         'deskripsi',
+        'gambar',
         'harga',
         'stok',
     ];
@@ -32,5 +33,13 @@ class Produk extends Model
     public function detailTransaksis()
     {
         return $this->hasMany(DetailTransaksi::class, 'produk_id');
+    }
+
+    public function gambarUrl(): string
+    {
+    if ($this->gambar && file_exists(storage_path('app/public/' . $this->gambar))) {
+        return asset('storage/' . $this->gambar);
+    }
+    return 'https://via.placeholder.com/80x80?text=No+Image';
     }
 }

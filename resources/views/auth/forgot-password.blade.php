@@ -24,60 +24,74 @@
         {{-- Card --}}
         <div class="bg-white rounded-2xl shadow-xl p-8">
 
-            {{-- Ikon --}}
             <div class="text-center mb-6">
-                <div class="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4">
+                <div class="inline-flex items-center justify-center w-16 h-16 bg-orange-100 rounded-full mb-4">
                     <span class="text-3xl">🔑</span>
                 </div>
                 <h1 class="text-2xl font-bold text-neutral-900 mb-2">Lupa Password?</h1>
                 <p class="text-sm text-neutral-500 leading-relaxed">
-                    Masukkan email yang terdaftar pada akun Anda. Kami akan mengirimkan link untuk mengatur ulang password.
+                    Isi data di bawah. Admin akan menerima permintaan Anda dan segera membantu reset password.
                 </p>
             </div>
 
             {{-- Alert Error --}}
-            <div id="alert-error" class="hidden bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl mb-4 text-sm flex gap-2">
-                <span>⚠️</span>
-                <span id="alert-message">Email tidak valid.</span>
-            </div>
+            @if ($errors->any())
+                <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl mb-4 text-sm flex gap-2">
+                    <span>⚠️</span>
+                    <span>{{ $errors->first() }}</span>
+                </div>
+            @endif
 
             {{-- Form --}}
-            <form id="form-forgot" class="space-y-5">
+            <form method="POST" action="{{ route('password.submit') }}" class="space-y-5">
+                @csrf
 
                 <div>
-                    <label for="email" class="block text-sm font-medium text-neutral-700 mb-1.5">
-                        Email Terdaftar
+                    <label class="block text-sm font-medium text-neutral-700 mb-1.5">
+                        Username <span class="text-red-500">*</span>
                     </label>
-                    <div class="relative">
-                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400">
-                            ✉️
-                        </span>
-                        <input type="email" id="email" required autofocus
-                               placeholder="nama@email.com"
-                               class="w-full pl-12 pr-4 py-3 border border-neutral-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition">
-                    </div>
-                    <p class="text-xs text-neutral-500 mt-2">
-                        💡 Gunakan email yang Anda pakai saat mendaftar akun.
-                    </p>
+                    <input type="text" name="username" required
+                           value="{{ old('username') }}"
+                           placeholder="Username akun Anda"
+                           class="w-full px-4 py-3 border border-neutral-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition">
                 </div>
 
-                <button type="submit" id="btn-submit"
-                        class="w-full px-4 py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl transition shadow-lg shadow-green-600/20 flex items-center justify-center gap-2">
-                    <span>📧 Kirim Link Reset Password</span>
+                <div>
+                    <label class="block text-sm font-medium text-neutral-700 mb-1.5">
+                        Nama Lengkap
+                    </label>
+                    <input type="text" name="nama"
+                           value="{{ old('nama') }}"
+                           placeholder="Nama Anda (opsional)"
+                           class="w-full px-4 py-3 border border-neutral-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-neutral-700 mb-1.5">
+                        No. Telepon / WhatsApp
+                    </label>
+                    <input type="tel" name="no_telepon"
+                           value="{{ old('no_telepon') }}"
+                           placeholder="Contoh: 081234567890"
+                           class="w-full px-4 py-3 border border-neutral-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-neutral-700 mb-1.5">
+                        Pesan Tambahan
+                    </label>
+                    <textarea name="pesan" rows="2"
+                              placeholder="Contoh: Tolong reset password saya"
+                              class="w-full px-4 py-3 border border-neutral-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition resize-none">{{ old('pesan') }}</textarea>
+                </div>
+
+                <button type="submit"
+                        class="w-full px-4 py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl transition shadow-lg shadow-green-600/20">
+                    📧 Kirim Permintaan ke Admin
                 </button>
             </form>
 
-            {{-- Info Keamanan --}}
-            <div class="mt-6 bg-blue-50 border border-blue-100 rounded-xl p-4 flex gap-3">
-                <span class="text-blue-500 text-xl shrink-0">🔒</span>
-                <div class="text-xs text-blue-800 leading-relaxed">
-                    <p class="font-semibold mb-1">Aman & Terlindungi</p>
-                    <p>Demi keamanan, kami tidak akan memberitahu apakah email terdaftar atau tidak. Cek inbox Anda dalam beberapa menit.</p>
-                </div>
-            </div>
-
-            {{-- Kembali ke Login --}}
-            <div class="mt-6 text-center">
+            <div class="mt-6 pt-6 border-t border-neutral-100 text-center">
                 <a href="{{ url('/login') }}" class="text-sm text-neutral-500 hover:text-green-600 transition">
                     ← Kembali ke Login
                 </a>
@@ -89,33 +103,5 @@
         </p>
     </div>
 
-    <script>
-    document.getElementById('form-forgot').addEventListener('submit', (e) => {
-        e.preventDefault();
-        document.getElementById('alert-error').classList.add('hidden');
-
-        const email = document.getElementById('email').value.trim();
-        const btn = document.getElementById('btn-submit');
-
-        // Validasi format email
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-            document.getElementById('alert-message').textContent = 'Format email tidak valid.';
-            document.getElementById('alert-error').classList.remove('hidden');
-            return;
-        }
-
-        // Loading
-        btn.disabled = true;
-        btn.innerHTML = '<span>⏳</span> Mengirim...';
-
-        // Simulasi kirim (backend nanti)
-        setTimeout(() => {
-            // Simpan email di localStorage untuk demo
-            localStorage.setItem('simantap_reset_email', email);
-            window.location.href = "{{ url('/forgot-password/sent') }}";
-        }, 800);
-    });
-    </script>
 </body>
 </html>

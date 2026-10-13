@@ -91,6 +91,20 @@
                 </a>
             </li>
 
+            {{-- ===== PERMINTAAN RESET PASSWORD (BARU) ===== --}}
+            <li class="nav-item {{ request()->routeIs('admin.password-request.*') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('admin.password-request.index') }}">
+                    <i class="fas fa-fw fa-key"></i>
+                    <span>Permintaan Reset Password</span>
+                    @php
+                        $pendingCount = \App\Models\PasswordRequest::where('status', 'pending')->count();
+                    @endphp
+                    @if($pendingCount > 0)
+                        <span class="badge badge-danger badge-pill ml-2">{{ $pendingCount }}</span>
+                    @endif
+                </a>
+            </li>
+
             <hr class="sidebar-divider d-none d-md-block">
 
             <div class="text-center d-none d-md-inline">
@@ -111,6 +125,19 @@
                     </button>
 
                     <ul class="navbar-nav ml-auto">
+
+                        {{-- Notifikasi Permintaan Reset --}}
+                        @php
+                            $notifPending = \App\Models\PasswordRequest::where('status', 'pending')->count();
+                        @endphp
+                        @if($notifPending > 0)
+                        <li class="nav-item dropdown no-arrow mx-1">
+                            <a class="nav-link dropdown-toggle" href="{{ route('admin.password-request.index') }}">
+                                <i class="fas fa-bell fa-fw text-warning"></i>
+                                <span class="badge badge-danger badge-counter">{{ $notifPending }}</span>
+                            </a>
+                        </li>
+                        @endif
 
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
@@ -148,7 +175,17 @@
                     @if(session('success'))
                         <div class="alert alert-success alert-dismissible fade show" role="alert">
                             <i class="fas fa-check-circle mr-2"></i>
-                            {{ session('success') }}
+                            {!! session('success') !!}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    @endif
+
+                    @if(session('info'))
+                        <div class="alert alert-info alert-dismissible fade show" role="alert">
+                            <i class="fas fa-info-circle mr-2"></i>
+                            {!! session('info') !!}
                             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
