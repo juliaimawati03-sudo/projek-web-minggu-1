@@ -3,65 +3,49 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\PenggunaRequest;
 use App\Models\User;
-use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 
 class PenggunaController extends Controller
 {
-    // Tampilkan daftar pengguna
+    /**
+     * Tampilkan daftar pengguna.
+     */
     public function index()
     {
         $pengguna = User::orderBy('created_at', 'desc')->get();
         return view('admin.pengguna.index', compact('pengguna'));
     }
 
-    // Simpan pengguna baru
-    public function store(Request $request)
+    /**
+     * Simpan pengguna baru.
+     */
+    public function store(PenggunaRequest $request)
     {
-        $validated = $request->validate([
-            'nama' => 'required|string|max:255',
-            'username' => 'required|string|max:255|unique:user,username',
-            'password' => 'required|string|min:6',
-            'role' => 'required|in:admin,kasir',
-        ], [
-            'nama.required' => 'Nama wajib diisi.',
-            'username.required' => 'Username wajib diisi.',
-            'username.unique' => 'Username sudah digunakan.',
-            'password.required' => 'Password wajib diisi.',
-            'password.min' => 'Password minimal 6 karakter.',
-            'role.required' => 'Role wajib dipilih.',
-        ]);
-
         User::create([
-            'nama' => $validated['nama'],
-            'username' => $validated['username'],
-            'password' => $validated['password'], // cast auto-hash
-            'role' => $validated['role'],
+            'nama'     => $request->nama,
+            'username' => $request->username,
+            'password' => $request->password,   // auto-hash via cast
+            'role'     => $request->role,
         ]);
 
         return redirect()->route('admin.pengguna.index')
             ->with('success', 'Pengguna berhasil ditambahkan.');
     }
 
-    // Update pengguna
-    public function update(Request $request, $id)
+    /**
+     * Update pengguna.
+     */
+    public function update(PenggunaRequest $request, $id)
     {
         $user = User::findOrFail($id);
 
-        $validated = $request->validate([
-            'nama' => 'required|string|max:255',
-            'username' => ['required', 'string', 'max:255', Rule::unique('user')->ignore($user->id)],
-            'password' => 'nullable|string|min:6',
-            'role' => 'required|in:admin,kasir',
-        ]);
+        $user->nama     = $request->nama;
+        $user->username = $request->username;
+        $user->role     = $request->role;
 
-        $user->nama = $validated['nama'];
-        $user->username = $validated['username'];
-        $user->role = $validated['role'];
-
-        if (!empty($validated['password'])) {
-            $user->password = $validated['password']; // cast auto-hash
+        if ($request->filled('password')) {
+            $user->password = $request->password;
         }
 
         $user->save();
@@ -70,7 +54,9 @@ class PenggunaController extends Controller
             ->with('success', 'Pengguna berhasil diperbarui.');
     }
 
-    // Hapus pengguna
+    /**
+     * Hapus pengguna.
+     */
     public function destroy($id)
     {
         $user = User::findOrFail($id);

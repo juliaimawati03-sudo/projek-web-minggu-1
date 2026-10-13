@@ -2,13 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class CatatanKeuangan extends Model
 {
-    use HasFactory;
-
     protected $table = 'catatan_keuangan';
 
     protected $fillable = [
@@ -16,7 +13,6 @@ class CatatanKeuangan extends Model
         'tanggal',
         'nominal',
         'keterangan',
-        
     ];
 
     protected $casts = [

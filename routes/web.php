@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Admin\PenggunaController;
 use App\Http\Controllers\Admin\SupplierController;
+use App\Http\Controllers\Admin\CatatanKeuanganController;
 
 // =====================================================
 // PUBLIC
@@ -75,8 +76,23 @@ Route::prefix('admin')->name('admin.')->group(function () {
         return view('admin.pembelian.create');
     })->name('pembelian.create');
 
-    Route::post('/pembelian', function () {
-        // Backend nanti
+    Route::post('/pembelian', function (\Illuminate\Http\Request $request) {
+        $request->validate([
+            'nama_supplier' => 'required|string|max:255',
+            'tanggal'       => 'required|date',
+            'nominal'       => 'required|numeric|min:1',
+            'keterangan'    => 'required|string|max:500',
+        ], [
+            'nama_supplier.required' => 'Nama supplier wajib diisi.',
+            'tanggal.required'       => 'Tanggal wajib diisi.',
+            'nominal.required'       => 'Nominal wajib diisi.',
+            'nominal.min'            => 'Nominal minimal Rp1.',
+            'keterangan.required'    => 'Keterangan wajib diisi.',
+        ]);
+
+        return redirect()
+            ->route('admin.pembelian.create')
+            ->with('success', 'Pembelian berhasil dicatat (demo).');
     })->name('pembelian.store');
 
     // ===== PRODUK =====
@@ -100,10 +116,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::put('/pengguna/{id}',      [PenggunaController::class, 'update']) ->name('pengguna.update');
     Route::delete('/pengguna/{id}',   [PenggunaController::class, 'destroy'])->name('pengguna.destroy');
 
-    // ===== LAPORAN =====
-    Route::get('/laporan', function () {
-        return view('admin.laporan.index');
-    })->name('laporan.index');
+    // ===== LAPORAN KEUANGAN — PAKAI CONTROLLER =====
+    Route::get('/laporan',            [CatatanKeuanganController::class, 'index'])  ->name('laporan.index');
+    Route::post('/laporan',           [CatatanKeuanganController::class, 'store'])  ->name('laporan.store');
+    Route::delete('/laporan/{id}',    [CatatanKeuanganController::class, 'destroy'])->name('laporan.destroy');
 });
 
 // =====================================================
