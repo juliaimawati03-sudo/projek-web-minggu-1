@@ -1,119 +1,106 @@
 @extends('layouts.kasir')
 
-@section('title', 'Detail Pesanan - SIMANTAP')
+@section('title', 'Detail Pesanan')
 @section('page-title', 'Detail Pesanan')
-@section('page-subtitle', 'Verifikasi & kelola status pesanan')
+@section('page-desc', 'Verifikasi & kelola status pesanan')
 
 @section('content')
 
-    {{-- Tombol Kembali — hover warna disamakan ke primary --}}
-    <a href="{{ url('/kasir/pesanan') }}"
-       class="inline-flex items-center gap-2 text-sm text-neutral-600 hover:text-primary mb-6 transition">
-        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-        </svg>
-        Kembali ke Daftar Pesanan
+    <a href="{{ url('/kasir/pesanan') }}" class="btn btn-sm btn-secondary mb-3">
+        <i class="fas fa-arrow-left mr-1"></i> Kembali ke Daftar Pesanan
     </a>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="row">
 
-        {{-- Kolom Kiri: Detail Pesanan --}}
-        <div class="lg:col-span-2 space-y-6">
+        {{-- Kolom Kiri: Detail --}}
+        <div class="col-lg-8 mb-4">
 
-            {{-- Info Pesanan — card disamakan ke gaya admin (rounded-xl, border-neutral-200,
-                 tanpa shadow berat), header gradient biru→indigo diganti ke gradasi primary --}}
-            <div class="bg-white rounded-xl border border-neutral-200 overflow-hidden">
-                <div class="px-6 py-4 text-white" style="background: linear-gradient(135deg, #16A34A 0%, #15803D 100%);">
-                    <div class="flex items-center justify-between flex-wrap gap-3">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 text-white" style="background: linear-gradient(135deg, #16A34A 0%, #15803D 100%);">
+                    <div class="d-flex justify-content-between align-items-center flex-wrap">
                         <div>
-                            <div class="text-xs text-green-100 mb-1">Nomor Pesanan</div>
-                            <div class="font-mono font-bold text-xl">ORD-20260924-0003</div>
+                            <div class="small text-white-50 mb-1">Nomor Pesanan</div>
+                            <div class="font-weight-bold" style="font-family: monospace; font-size: 20px;">ORD-20260924-0003</div>
                         </div>
-                        <span class="text-xs font-semibold px-3 py-1.5 rounded-full bg-amber-400 text-amber-900 inline-flex items-center gap-1.5">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                            Menunggu Verifikasi
+                        <span class="badge badge-warning">
+                            <i class="fas fa-clock mr-1"></i> Menunggu Verifikasi
                         </span>
                     </div>
                 </div>
 
-                <div class="p-6 space-y-6">
+                <div class="card-body">
 
                     {{-- Data Pelanggan --}}
-                    <div>
-                        <h3 class="font-bold text-neutral-800 mb-3 flex items-center gap-2">
-                            <svg class="w-4 h-4 text-primary-dark" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-                            Data Pelanggan
-                        </h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                            <div>
-                                <div class="text-neutral-500 mb-0.5">Nama Lengkap</div>
-                                <div class="font-semibold text-neutral-800">Budi Santoso</div>
-                            </div>
-                            <div>
-                                <div class="text-neutral-500 mb-0.5">Nomor HP</div>
-                                <div class="font-semibold text-neutral-800">081234567890</div>
-                            </div>
-                            <div class="md:col-span-2">
-                                <div class="text-neutral-500 mb-0.5">Alamat Lengkap</div>
-                                <div class="font-semibold text-neutral-800">Jl. Pertanian No. 123, RT 01/RW 02, Desa Sukamaju</div>
-                            </div>
-                            <div class="md:col-span-2">
-                                <div class="text-neutral-500 mb-0.5">Catatan</div>
-                                <div class="text-neutral-700 italic">Tolong dikirim pagi hari</div>
-                            </div>
+                    <h6 class="font-weight-bold text-dark mb-3">
+                        <i class="fas fa-user text-success mr-1"></i> Data Pelanggan
+                    </h6>
+                    <div class="row mb-4">
+                        <div class="col-md-6 mb-3">
+                            <div class="text-muted small mb-1">Nama Lengkap</div>
+                            <div class="font-weight-bold">Budi Santoso</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="text-muted small mb-1">Nomor HP</div>
+                            <div class="font-weight-bold">081234567890</div>
+                        </div>
+                        <div class="col-12 mb-3">
+                            <div class="text-muted small mb-1">Alamat Lengkap</div>
+                            <div class="font-weight-bold">Jl. Pertanian No. 123, RT 01/RW 02, Desa Sukamaju</div>
+                        </div>
+                        <div class="col-12">
+                            <div class="text-muted small mb-1">Catatan</div>
+                            <div class="font-italic">Tolong dikirim pagi hari</div>
                         </div>
                     </div>
+
+                    <hr>
 
                     {{-- Produk Dipesan --}}
-                    <div class="pt-4 border-t border-neutral-100">
-                        <h3 class="font-bold text-neutral-800 mb-3 flex items-center gap-2">
-                            <svg class="w-4 h-4 text-primary-dark" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m-10 4a1 1 0 102 0 1 1 0 00-2 0zm10 0a1 1 0 102 0 1 1 0 00-2 0z"/></svg>
-                            Produk Dipesan
-                        </h3>
-                        <div class="space-y-3">
-                            <div class="flex items-center gap-3 bg-neutral-50 rounded-lg p-3">
-                                <div class="w-11 h-11 bg-primary-xlight rounded-lg flex items-center justify-center shrink-0">
-                                    <svg class="w-5 h-5 text-primary-dark" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                                </div>
-                                <div class="flex-1">
-                                    <div class="font-semibold text-sm text-neutral-800">Pacul</div>
-                                    <div class="text-xs text-neutral-500">Rp75.000 × 2</div>
-                                </div>
-                                <div class="font-bold text-neutral-800">Rp150.000</div>
-                            </div>
-                            <div class="flex items-center gap-3 bg-neutral-50 rounded-lg p-3">
-                                <div class="w-11 h-11 bg-primary-xlight rounded-lg flex items-center justify-center shrink-0">
-                                    <svg class="w-5 h-5 text-primary-dark" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                                </div>
-                                <div class="flex-1">
-                                    <div class="font-semibold text-sm text-neutral-800">Arit</div>
-                                    <div class="text-xs text-neutral-500">Rp45.000 × 1</div>
-                                </div>
-                                <div class="font-bold text-neutral-800">Rp45.000</div>
-                            </div>
+                    <h6 class="font-weight-bold text-dark mb-3">
+                        <i class="fas fa-shopping-cart text-success mr-1"></i> Produk Dipesan
+                    </h6>
+
+                    <div class="d-flex align-items-center mb-2 p-3 bg-light rounded">
+                        <div class="rounded bg-success text-white d-flex align-items-center justify-content-center mr-3"
+                             style="width: 44px; height: 44px;">
+                            <i class="fas fa-hammer"></i>
                         </div>
-                        <div class="mt-4 pt-4 border-t border-neutral-100 flex justify-between items-center">
-                            <span class="font-semibold text-neutral-700">Total</span>
-                            <span class="font-extrabold text-2xl text-primary-dark">Rp195.000</span>
+                        <div class="flex-grow-1">
+                            <div class="font-weight-bold">Pacul</div>
+                            <div class="text-muted small">Rp75.000 × 2</div>
                         </div>
+                        <div class="font-weight-bold">Rp150.000</div>
                     </div>
 
+                    <div class="d-flex align-items-center mb-2 p-3 bg-light rounded">
+                        <div class="rounded bg-success text-white d-flex align-items-center justify-content-center mr-3"
+                             style="width: 44px; height: 44px;">
+                            <i class="fas fa-cut"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="font-weight-bold">Arit</div>
+                            <div class="text-muted small">Rp45.000 × 1</div>
+                        </div>
+                        <div class="font-weight-bold">Rp45.000</div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center pt-3 mt-3 border-top">
+                        <span class="font-weight-bold">Total</span>
+                        <span class="h4 mb-0 font-weight-bold text-success">Rp195.000</span>
+                    </div>
+
+                    <hr>
+
                     {{-- Bukti Transfer --}}
-                    <div class="pt-4 border-t border-neutral-100">
-                        <h3 class="font-bold text-neutral-800 mb-3 flex items-center gap-2">
-                            <svg class="w-4 h-4 text-primary-dark" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 17a4 4 0 100-8 4 4 0 000 8z"/></svg>
-                            Bukti Transfer
-                        </h3>
-                        <div class="bg-neutral-50 rounded-xl p-3 border border-neutral-200">
-                            <div class="aspect-video bg-white rounded-lg flex items-center justify-center overflow-hidden">
-                                <img src="https://via.placeholder.com/800x600/22c55e/ffffff?text=Bukti+Transfer+BRI"
-                                     alt="Bukti Transfer"
-                                     class="max-w-full max-h-full object-contain">
-                            </div>
-                            <div class="text-xs text-neutral-500 text-center mt-3 flex items-center justify-center gap-1.5">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/></svg>
-                                bukti-transfer-budi.jpg (245 KB)
-                            </div>
+                    <h6 class="font-weight-bold text-dark mb-3">
+                        <i class="fas fa-camera text-success mr-1"></i> Bukti Transfer
+                    </h6>
+                    <div class="bg-light rounded p-3 border">
+                        <img src="https://via.placeholder.com/800x600/22c55e/ffffff?text=Bukti+Transfer+BRI"
+                             alt="Bukti Transfer"
+                             class="img-fluid rounded mb-2">
+                        <div class="text-center text-muted small">
+                            <i class="fas fa-paperclip mr-1"></i> bukti-transfer-budi.jpg (245 KB)
                         </div>
                     </div>
 
@@ -122,66 +109,54 @@
         </div>
 
         {{-- Kolom Kanan: Aksi --}}
-        <div class="lg:col-span-1 space-y-6">
+        <div class="col-lg-4 mb-4">
 
-            {{-- Aksi Verifikasi — warna tombol sudah hijau sebelumnya (match primary),
-                 cuma diganti ke token 'primary' biar konsisten dengan sistem warna admin --}}
-            <div class="bg-white rounded-xl border border-neutral-200 p-6">
-                <h3 class="font-bold text-neutral-800 mb-4">Aksi</h3>
+            <div class="card shadow mb-4">
+                <div class="card-body">
+                    <h6 class="font-weight-bold text-dark mb-3">Aksi</h6>
 
-                <div class="space-y-3">
-                    <button onclick="verifikasiPesanan()"
-                            class="w-full px-4 py-3 bg-primary hover:bg-primary-dark text-white font-semibold rounded-lg transition flex items-center justify-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-                        Verifikasi Pembayaran
+                    <button onclick="verifikasiPesanan()" class="btn btn-success btn-block mb-2">
+                        <i class="fas fa-check mr-1"></i> Verifikasi Pembayaran
                     </button>
-                    <button onclick="tolakPesanan()"
-                            class="w-full px-4 py-3 bg-red-50 hover:bg-red-100 text-red-600 font-semibold rounded-lg transition flex items-center justify-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-                        Tolak Bukti Transfer
+
+                    <button onclick="tolakPesanan()" class="btn btn-outline-danger btn-block">
+                        <i class="fas fa-times mr-1"></i> Tolak Bukti Transfer
                     </button>
+
+                    <div class="alert alert-info small mt-3 mb-0">
+                        <i class="fas fa-info-circle mr-1"></i>
+                        <strong>Verifikasi</strong> akan mengubah status pesanan menjadi "Diproses".
+                        <strong>Tolak</strong> akan meminta pelanggan mengirim ulang bukti transfer.
+                    </div>
                 </div>
+            </div>
 
-                <div class="mt-4 pt-4 border-t border-neutral-100">
-                    <p class="text-xs text-neutral-500 leading-relaxed flex gap-1.5">
-                        <svg class="w-3.5 h-3.5 shrink-0 mt-0.5 text-primary-dark" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        <span><strong>Verifikasi</strong> akan mengubah status pesanan menjadi "Diproses" dan stok produk otomatis berkurang sesuai jumlah pesanan. <strong>Tolak</strong> akan meminta pelanggan mengirim ulang bukti transfer yang valid.</span>
+            <div class="card shadow-sm" style="background: #F0FDF4; border: 1px solid #BBF7D0;">
+                <div class="card-body">
+                    <div class="font-weight-bold text-success mb-1">Perlu segera diverifikasi</div>
+                    <p class="small text-muted mb-0">
+                        Pesanan sudah menunggu sejak 24 Sep 2026, 10:30. Periksa bukti transfer sebelum menekan verifikasi.
                     </p>
                 </div>
             </div>
 
-            {{-- Ringkasan status — kartu tambahan bergaya admin untuk konteks tambahan --}}
-            <div class="bg-primary-pale rounded-xl border border-primary-light/30 p-5">
-                <p class="text-primary-dark text-sm font-semibold mb-1">Perlu segera diverifikasi</p>
-                <p class="text-xs text-neutral-600 leading-relaxed">Pesanan sudah menunggu sejak 24 Sep 2026, 10:30. Periksa bukti transfer sebelum menekan verifikasi.</p>
-            </div>
         </div>
     </div>
 
-    <script>
-    // ============ Aksi Verifikasi & Tolak ============
-    // Logic sama persis seperti sebelumnya, hanya pesan alert disesuaikan (tanpa emoji)
-    function verifikasiPesanan() {
-        if (confirm('Verifikasi pembayaran untuk pesanan ini?\n\nStatus akan berubah menjadi "Diproses" dan stok produk otomatis berkurang.')) {
-            alert('Pembayaran berhasil diverifikasi!\n\n(BACKEND NANTI: Update status & kurangi stok di database)');
-            // Nanti: fetch ke backend, lalu redirect ke /kasir/pesanan
-        }
-    }
-
-    function tolakPesanan() {
-        if (confirm('Tolak bukti transfer pesanan ini?\n\nPelanggan akan diminta mengirim ulang bukti pembayaran yang valid.')) {
-            alert('Bukti transfer ditolak.\n\n(BACKEND NANTI: Kirim notifikasi ke pelanggan)');
-            // Nanti: fetch ke backend
-        }
-    }
-
-    // ============ Cek Akses ============
-    document.addEventListener('DOMContentLoaded', () => {
-        const user = JSON.parse(localStorage.getItem('simantap_user') || 'null');
-        if (!user || (user.role !== 'kasir' && user.role !== 'admin')) {
-            window.location.href = '/login';
-        }
-    });
-    </script>
-
 @endsection
+
+@push('scripts')
+<script>
+function verifikasiPesanan() {
+    if (confirm('Verifikasi pembayaran untuk pesanan ini?\n\nStatus akan berubah menjadi "Diproses".')) {
+        alert('Pembayaran berhasil diverifikasi!');
+    }
+}
+
+function tolakPesanan() {
+    if (confirm('Tolak bukti transfer pesanan ini?')) {
+        alert('Bukti transfer ditolak.');
+    }
+}
+</script>
+@endpush

@@ -6,96 +6,120 @@
 
 @section('content')
 
-{{-- Ringkasan --}}
-<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-    <div class="bg-white rounded-xl border border-neutral-200 p-5">
-        <p class="text-sm text-neutral-500">Jumlah Transaksi</p>
-        <p class="text-2xl font-bold text-neutral-800">{{ $jumlahTransaksi }}</p>
-    </div>
-    <div class="bg-white rounded-xl border border-neutral-200 p-5">
-        <p class="text-sm text-neutral-500">Total Pendapatan</p>
-        <p class="text-2xl font-bold text-green-700">Rp {{ number_format($totalPendapatan, 0, ',', '.') }}</p>
-    </div>
-</div>
+    {{-- Ringkasan --}}
+    <div class="row mb-4">
 
-<div class="bg-white rounded-xl border border-neutral-200 overflow-hidden">
-
-    {{-- Filter tanggal --}}
-    <form method="GET" action="{{ route('kasir.riwayat.index') }}" class="p-4 border-b border-neutral-200 flex flex-wrap items-end gap-3">
-        <div>
-            <label class="block text-xs font-medium text-neutral-600 mb-1">Dari tanggal</label>
-            <input type="date" name="dari" value="{{ old('dari', $dari) }}"
-                   class="rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500">
+        <div class="col-md-6 mb-3">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Jumlah Transaksi
+                            </div>
+                            <div class="h4 mb-0 font-weight-bold text-gray-800">
+                                {{ $jumlahTransaksi ?? 0 }}
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-receipt fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div>
-            <label class="block text-xs font-medium text-neutral-600 mb-1">Sampai tanggal</label>
-            <input type="date" name="sampai" value="{{ old('sampai', $sampai) }}"
-                   class="rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500">
-        </div>
-        <button type="submit" class="rounded-lg bg-green-600 hover:bg-green-700 text-white px-4 py-2 text-sm font-medium">
-            Filter
-        </button>
-        @if ($dari || $sampai)
-            <a href="{{ route('kasir.riwayat.index') }}" class="rounded-lg border border-neutral-300 hover:bg-neutral-50 px-4 py-2 text-sm text-neutral-700">
-                Reset
-            </a>
-        @endif
-    </form>
 
-    {{-- Pesan error validasi --}}
-    @if ($errors->any())
-        <div class="mx-4 mt-4 rounded-lg bg-red-50 border border-red-200 text-red-700 px-4 py-3 text-sm">
-            @foreach ($errors->all() as $error)
-                <p>{{ $error }}</p>
-            @endforeach
+        <div class="col-md-6 mb-3">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Total Pendapatan
+                            </div>
+                            <div class="h4 mb-0 font-weight-bold text-success">
+                                Rp {{ number_format($totalPendapatan ?? 0, 0, ',', '.') }}
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-money-bill-wave fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    @endif
 
-    <div class="overflow-x-auto">
-        <table class="w-full text-sm">
-            <thead class="bg-neutral-50 text-neutral-600">
-                <tr>
-                    <th class="text-left px-4 py-3 font-semibold">No</th>
-                    <th class="text-left px-4 py-3 font-semibold">Kode</th>
-                    <th class="text-left px-4 py-3 font-semibold">Tanggal</th>
-                    <th class="text-left px-4 py-3 font-semibold">Kasir</th>
-                    <th class="text-right px-4 py-3 font-semibold">Total Harga</th>
-                    <th class="text-right px-4 py-3 font-semibold">Nominal Bayar</th>
-                    <th class="text-right px-4 py-3 font-semibold">Kembalian</th>
-                    <th class="text-center px-4 py-3 font-semibold">Aksi</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-neutral-100">
-                @forelse ($transaksi as $item)
-                    <tr class="hover:bg-neutral-50">
-                        <td class="px-4 py-3">{{ $transaksi->firstItem() + $loop->index }}</td>
-                        <td class="px-4 py-3 font-medium text-neutral-800">TRX-{{ str_pad($item->id, 4, '0', STR_PAD_LEFT) }}</td>
-                        <td class="px-4 py-3 text-neutral-600">{{ $item->tanggal_transaksi?->format('d/m/Y H:i') }}</td>
-                        <td class="px-4 py-3">{{ $item->kasir->name ?? $item->kasir->nama ?? '-' }}</td>
-                        <td class="px-4 py-3 text-right font-medium">Rp {{ number_format($item->total_harga, 0, ',', '.') }}</td>
-                        <td class="px-4 py-3 text-right">Rp {{ number_format($item->nominal_bayar, 0, ',', '.') }}</td>
-                        <td class="px-4 py-3 text-right">Rp {{ number_format($item->kembalian, 0, ',', '.') }}</td>
-                        <td class="px-4 py-3 text-center">
-                            <a href="#" class="rounded-lg bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 text-xs font-medium">
-                                Detail
-                            </a>
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="8" class="px-4 py-10 text-center text-neutral-500">
-                            Tidak ada transaksi pada rentang tanggal ini
-                        </td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
     </div>
 
-    @if ($transaksi->hasPages())
-        <div class="p-4 border-t border-neutral-200">
-            {{ $transaksi->links() }}
+    {{-- Card Tabel --}}
+    <div class="card shadow mb-4">
+
+        {{-- Filter tanggal --}}
+        <div class="card-header py-3">
+            <form method="GET" action="{{ route('kasir.riwayat.index') }}" class="form-inline">
+                <label class="mr-2 font-weight-bold">Dari:</label>
+                <input type="date" name="dari" value="{{ old('dari', $dari ?? '') }}"
+                       class="form-control form-control-sm mr-2 mb-2">
+
+                <label class="mr-2 ml-2 font-weight-bold">Sampai:</label>
+                <input type="date" name="sampai" value="{{ old('sampai', $sampai ?? '') }}"
+                       class="form-control form-control-sm mr-2 mb-2">
+
+                <button type="submit" class="btn btn-sm btn-success mb-2 mr-2">
+                    <i class="fas fa-search mr-1"></i> Filter
+                </button>
+
+                @if (($dari ?? '') || ($sampai ?? ''))
+                    <a href="{{ route('kasir.riwayat.index') }}" class="btn btn-sm btn-secondary mb-2">
+                        Reset
+                    </a>
+                @endif
+            </form>
         </div>
-    @endif
-</div>
-@endsection
+
+        <div class="card-body">
+
+            {{-- Error validasi --}}
+            @if ($errors->any())
+                <div class="alert alert-danger small">
+                    @foreach ($errors->all() as $error)
+                        <div>{{ $error }}</div>
+                    @endforeach
+                </div>
+            @endif
+
+            <div class="table-responsive">
+                <table class="table table-bordered" width="100%" cellspacing="0">
+                    <thead class="bg-light">
+                        <tr>
+                            <th width="50">No</th>
+                            <th>Kode</th>
+                            <th>Tanggal</th>
+                            <th>Kasir</th>
+                            <th class="text-right">Total Harga</th>
+                            <th class="text-right">Nominal Bayar</th>
+                            <th class="text-right">Kembalian</th>
+                            <th width="100" class="text-center">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse ($transaksi ?? [] as $item)
+                            <tr>
+                                <td>{{ $transaksi->firstItem() + $loop->index }}</td>
+                                <td class="font-weight-bold">
+                                    TRX-{{ str_pad($item->id, 4, '0', STR_PAD_LEFT) }}
+                                </td>
+                                <td>{{ optional($item->tanggal_transaksi)->format('d/m/Y H:i') ?? '-' }}</td>
+                                <td>{{ $item->kasir->nama ?? $item->kasir->name ?? '-' }}</td>
+                                <td class="text-right">Rp {{ number_format($item->total_harga, 0, ',', '.') }}</td>
+                                <td class="text-right">Rp {{ number_format($item->nominal_bayar, 0, ',', '.') }}</td>
+                                <td class="text-right">Rp {{ number_format($item->kembalian, 0, ',', '.') }}</td>
+                                <td class="text-center">
+                                    <a href="#" class="btn btn-sm btn-success">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan
