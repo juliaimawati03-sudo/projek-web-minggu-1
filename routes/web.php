@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\ProdukController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Admin\PembelianController;
 use App\Http\Controllers\ForgotPasswordController;
+use App\Http\Controllers\RiwayatController;
 use App\Http\Controllers\Admin\PasswordRequestController;
 
 // =====================================================
@@ -122,8 +123,6 @@ Route::prefix('kasir')->name('kasir.')->group(function () {
         return view('kasir.detail-pesanan');
     })->name('pesanan.show');
 
-    Route::get('/riwayat', function () {
-        return view('kasir.riwayat');
-    })->name('riwayat.index');
-
+    Route::get('/riwayat', [\App\Http\Controllers\Kasir\RiwayatController::class, 'index'])
+    ->name('riwayat.index');
 });
