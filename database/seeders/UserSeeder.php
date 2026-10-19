@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
@@ -15,7 +14,7 @@ class UserSeeder extends Seeder
             ['username' => 'admin'],
             [
                 'nama' => 'Administrator SIMANTAP',
-                'password' => Hash::make('password'),
+                'password' => 'password', // Otomatis di-hash oleh Model
                 'role' => 'admin',
                 'no_hp' => '081234567890',
                 'alamat' => 'Kantor Toko SIMANTAP, Jl. Pertanian No. 1, Jombang',
@@ -29,7 +28,7 @@ class UserSeeder extends Seeder
             ['username' => 'kasir'],
             [
                 'nama' => 'Siti Aminah',
-                'password' => Hash::make('password'),
+                'password' => 'password',
                 'role' => 'kasir',
                 'no_hp' => '082345678901',
                 'alamat' => 'Jl. Merdeka Barat No. 15, Jombang',
@@ -42,7 +41,7 @@ class UserSeeder extends Seeder
             ['username' => 'kasir2'],
             [
                 'nama' => 'Budi Santoso',
-                'password' => Hash::make('password'),
+                'password' => 'password',
                 'role' => 'kasir',
                 'no_hp' => '083456789012',
                 'alamat' => 'Desa Candi Mulyo, Jombang',
@@ -100,7 +99,7 @@ class UserSeeder extends Seeder
                 ['username' => $p['username']],
                 [
                     'nama' => $p['nama'],
-                    'password' => Hash::make('password'),
+                    'password' => 'password', // Otomatis di-hash oleh Model
                     'role' => 'pelanggan',
                     'no_hp' => $p['no_hp'],
                     'alamat' => $p['alamat'],

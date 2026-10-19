@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\CatatanKeuanganController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\PasswordRequestController;
@@ -14,7 +15,6 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Kasir\PesananController;
 use App\Http\Controllers\Kasir\RiwayatController;
 use App\Http\Controllers\OrderController;
-use Illuminate\Support\Facades\Route;
 
 // =====================================================
 // PUBLIC
@@ -53,9 +53,9 @@ Route::get('/password-changed', function () {
 })->name('password.changed');
 
 // =====================================================
-// ADMIN PANEL
+// ADMIN PANEL (Hanya Admin yang Login)
 // =====================================================
-Route::prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
 
     // ===== PERMINTAAN RESET PASSWORD =====
     Route::get('/password-request', [PasswordRequestController::class, 'index'])->name('password-request.index');
@@ -69,7 +69,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/transaksi', [TransaksiController::class, 'index'])->name('transaksi.index');
     Route::get('/transaksi/{id}', [TransaksiController::class, 'show'])->name('transaksi.show');
 
-    // ===== PEMBELIAN — PAKAI CONTROLLER =====
+    // ===== PEMBELIAN =====
     Route::get('/pembelian', [PembelianController::class, 'create'])->name('pembelian.create');
     Route::post('/pembelian', [PembelianController::class, 'store'])->name('pembelian.store');
 
@@ -78,19 +78,20 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::post('/produk', [ProdukController::class, 'store'])->name('produk.store');
     Route::put('/produk/{id}', [ProdukController::class, 'update'])->name('produk.update');
     Route::delete('/produk/{id}', [ProdukController::class, 'destroy'])->name('produk.destroy');
-    // ===== SUPPLIER — PAKAI CONTROLLER =====
+
+    // ===== SUPPLIER =====
     Route::get('/supplier', [SupplierController::class, 'index'])->name('supplier.index');
     Route::post('/supplier', [SupplierController::class, 'store'])->name('supplier.store');
     Route::put('/supplier/{id}', [SupplierController::class, 'update'])->name('supplier.update');
     Route::delete('/supplier/{id}', [SupplierController::class, 'destroy'])->name('supplier.destroy');
 
-    // ===== PENGGUNA — PAKAI CONTROLLER =====
+    // ===== PENGGUNA =====
     Route::get('/pengguna', [PenggunaController::class, 'index'])->name('pengguna.index');
     Route::post('/pengguna', [PenggunaController::class, 'store'])->name('pengguna.store');
     Route::put('/pengguna/{id}', [PenggunaController::class, 'update'])->name('pengguna.update');
     Route::delete('/pengguna/{id}', [PenggunaController::class, 'destroy'])->name('pengguna.destroy');
 
-    // ===== LAPORAN KEUANGAN — PAKAI CONTROLLER =====
+    // ===== LAPORAN KEUANGAN =====
     Route::get('/laporan', [CatatanKeuanganController::class, 'index'])->name('laporan.index');
     Route::post('/laporan', [CatatanKeuanganController::class, 'store'])->name('laporan.store');
     Route::put('/laporan/{id}', [CatatanKeuanganController::class, 'update'])->name('laporan.update');
@@ -99,14 +100,18 @@ Route::prefix('admin')->name('admin.')->group(function () {
 });
 
 // =====================================================
-// KASIR PANEL
+// KASIR PANEL (Hanya Kasir & Admin yang Login)
 // =====================================================
-Route::prefix('kasir')->name('kasir.')->group(function () {
+Route::middleware(['auth', 'role:kasir,admin'])->prefix('kasir')->name('kasir.')->group(function () {
     Route::get('/dashboard', [PesananController::class, 'dashboard'])->name('dashboard');
+    
+    // ===== PESANAN =====
     Route::get('/pesanan', [PesananController::class, 'index'])->name('pesanan.index');
     Route::get('/pesanan/{id}', [PesananController::class, 'show'])->name('pesanan.show');
     Route::post('/pesanan/{id}/verifikasi', [PesananController::class, 'verifikasi'])->name('pesanan.verifikasi');
     Route::post('/pesanan/{id}/tolak', [PesananController::class, 'tolak'])->name('pesanan.tolak');
     Route::put('/pesanan/{id}/status', [PesananController::class, 'updateStatus'])->name('pesanan.status');
+    
+    // ===== RIWAYAT =====
     Route::get('/riwayat', [RiwayatController::class, 'index'])->name('riwayat.index');
 });
