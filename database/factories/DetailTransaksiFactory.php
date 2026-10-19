@@ -2,12 +2,13 @@
 
 namespace Database\Factories;
 
+use App\Models\DetailTransaksi;
 use App\Models\Produk;
 use App\Models\Transaksi;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\DetailTransaksi>
+ * @extends Factory<DetailTransaksi>
  */
 class DetailTransaksiFactory extends Factory
 {

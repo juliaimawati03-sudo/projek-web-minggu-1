@@ -15,12 +15,12 @@ return new class extends Migration
             $table->id();
 
             $table->foreignId('transaksi_id')
-                  ->constrained('transaksi')
-                  ->cascadeOnDelete();
+                ->constrained('transaksi')
+                ->cascadeOnDelete();
 
             $table->foreignId('produk_id')
-                  ->constrained('produk')
-                  ->cascadeOnDelete();
+                ->constrained('produk')
+                ->cascadeOnDelete();
 
             $table->integer('jumlah');
             $table->integer('harga_satuan');

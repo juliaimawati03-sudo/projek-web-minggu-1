@@ -14,6 +14,7 @@ class Produk extends Model
     protected $fillable = [
         'supplier_id',
         'nama_produk',
+        'kategori',
         'deskripsi',
         'gambar',
         'harga',
@@ -37,9 +38,10 @@ class Produk extends Model
 
     public function gambarUrl(): string
     {
-    if ($this->gambar && file_exists(storage_path('app/public/' . $this->gambar))) {
-        return asset('storage/' . $this->gambar);
-    }
-    return 'https://via.placeholder.com/80x80?text=No+Image';
+        if ($this->gambar && file_exists(storage_path('app/public/'.$this->gambar))) {
+            return asset('storage/'.$this->gambar);
+        }
+
+        return 'https://via.placeholder.com/80x80?text=No+Image';
     }
 }

@@ -13,33 +13,38 @@
 
         <div id="produk-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             @foreach ($produkList as $produk)
+                @php
+                    $nama = $produk->nama_produk ?? $produk->nama ?? 'Alat Pertanian';
+                    $gambar = $produk->gambar ? asset('storage/' . $produk->gambar) : 'https://images.unsplash.com/photo-1592417817098-8f3d6ef2393c?w=400&auto=format&fit=crop&q=60';
+                    $kategori = $produk->kategori ?? 'pertanian';
+                @endphp
                 <div class="produk-card bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col"
-                     data-kategori="{{ $produk['kategori'] }}">
+                     data-kategori="{{ $kategori }}">
 
                     {{-- Foto --}}
                     <div class="relative aspect-square overflow-hidden bg-neutral-100">
-                        <img src="{{ $produk['gambar'] }}" alt="{{ $produk['nama'] }}"
+                        <img src="{{ $gambar }}" alt="{{ $nama }}"
                              class="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
                              loading="lazy">
                         <span class="absolute top-3 left-3 px-2.5 py-1 text-xs font-semibold rounded-full
-                            {{ $produk['stok'] ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-600' }}">
-                            {{ $produk['stok'] ? 'Tersedia' : 'Habis' }}
+                            {{ $produk->stok ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-600' }}">
+                            {{ $produk->stok ? 'Tersedia' : 'Habis' }}
                         </span>
                     </div>
 
                     {{-- Info --}}
                     <div class="p-5 flex-1 flex flex-col">
-                        <h3 class="font-bold text-neutral-900 text-lg mb-1">{{ $produk['nama'] }}</h3>
-                        <p class="text-sm text-neutral-500 mb-4 line-clamp-2 flex-1">{{ $produk['deskripsi'] }}</p>
+                        <h3 class="font-bold text-neutral-900 text-lg mb-1">{{ $nama }}</h3>
+                        <p class="text-sm text-neutral-500 mb-4 line-clamp-2 flex-1">{{ $produk->deskripsi ?? 'Alat pertanian berkualitas tinggi untuk efisiensi bertani Anda.' }}</p>
 
                         <div class="text-xl font-extrabold text-green-600 mb-4">
-                            Rp{{ number_format($produk['harga'], 0, ',', '.') }}
+                            Rp{{ number_format($produk->harga, 0, ',', '.') }}
                         </div>
 
                         <div class="space-y-2">
-                            <button onclick='tambahKeKeranjang(@json($produk))'
-                                    {{ !$produk['stok'] ? 'disabled' : '' }}
-                                    class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-green-600 hover:bg-green-700 disabled:bg-neutral-300 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-lg transition">
+                            <button onclick='tambahKeKeranjang({ id: {{ $produk->id }}, nama: @json($nama), harga: {{ $produk->harga }}, stok: {{ $produk->stok }}, gambar: @json($gambar) })'
+                                    {{ !$produk->stok ? 'disabled' : '' }}
+                                    class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-green-600 hover:bg-green-700 disabled:bg-neutral-300 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-lg transition shadow-sm">
                                 <span>🛒</span> Tambah ke Keranjang
                             </button>
                         </div>

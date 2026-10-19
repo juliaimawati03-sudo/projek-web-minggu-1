@@ -10,10 +10,11 @@ class RiwayatController extends Controller
 {
     public function index(FilterRiwayatRequest $request)
     {
-        $dari   = $request->input('dari');
+        $dari = $request->input('dari');
         $sampai = $request->input('sampai');
 
-        $query = Transaksi::with('kasir')
+        $query = Transaksi::with(['kasir', 'pelanggan', 'detailTransaksis.produk'])
+            ->where('status', 'selesai')
             ->when($dari, fn ($q) => $q->whereDate('tanggal_transaksi', '>=', $dari))
             ->when($sampai, fn ($q) => $q->whereDate('tanggal_transaksi', '<=', $sampai));
 
@@ -21,6 +22,7 @@ class RiwayatController extends Controller
         $totalPendapatan = (clone $query)->sum('total_harga');
 
         $transaksi = $query->orderByDesc('tanggal_transaksi')
+            ->orderByDesc('id')
             ->paginate(10)
             ->withQueryString();
 

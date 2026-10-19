@@ -14,6 +14,7 @@ class PenggunaController extends Controller
     public function index()
     {
         $pengguna = User::orderBy('created_at', 'desc')->get();
+
         return view('admin.pengguna.index', compact('pengguna'));
     }
 
@@ -23,10 +24,14 @@ class PenggunaController extends Controller
     public function store(PenggunaRequest $request)
     {
         User::create([
-            'nama'     => $request->nama,
+            'nama' => $request->nama,
             'username' => $request->username,
             'password' => $request->password,   // auto-hash via cast
-            'role'     => $request->role,
+            'role' => $request->role,
+            'no_hp' => $request->no_hp,
+            'alamat' => $request->alamat,
+            'latitude' => $request->latitude,
+            'longitude' => $request->longitude,
         ]);
 
         return redirect()->route('admin.pengguna.index')
@@ -40,9 +45,13 @@ class PenggunaController extends Controller
     {
         $user = User::findOrFail($id);
 
-        $user->nama     = $request->nama;
+        $user->nama = $request->nama;
         $user->username = $request->username;
-        $user->role     = $request->role;
+        $user->role = $request->role;
+        $user->no_hp = $request->no_hp;
+        $user->alamat = $request->alamat;
+        $user->latitude = $request->latitude;
+        $user->longitude = $request->longitude;
 
         if ($request->filled('password')) {
             $user->password = $request->password;

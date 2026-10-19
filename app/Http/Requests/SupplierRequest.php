@@ -32,7 +32,7 @@ class SupplierRequest extends FormRequest
                 Rule::unique('supplier', 'nama_supplier')->ignore($supplierId),
             ],
             'no_telepon' => 'required|string|max:20',
-            'alamat'     => 'required|string',
+            'alamat' => 'required|string',
         ];
     }
 
@@ -43,11 +43,11 @@ class SupplierRequest extends FormRequest
     {
         return [
             'nama_supplier.required' => 'Nama supplier wajib diisi.',
-            'nama_supplier.unique'   => 'Nama supplier sudah terdaftar.',
-            'nama_supplier.max'      => 'Nama supplier maksimal 255 karakter.',
-            'no_telepon.required'    => 'Nomor telepon wajib diisi.',
-            'no_telepon.max'         => 'Nomor telepon maksimal 20 karakter.',
-            'alamat.required'        => 'Alamat wajib diisi.',
+            'nama_supplier.unique' => 'Nama supplier sudah terdaftar.',
+            'nama_supplier.max' => 'Nama supplier maksimal 255 karakter.',
+            'no_telepon.required' => 'Nomor telepon wajib diisi.',
+            'no_telepon.max' => 'Nomor telepon maksimal 20 karakter.',
+            'alamat.required' => 'Alamat wajib diisi.',
         ];
     }
 
@@ -58,8 +58,8 @@ class SupplierRequest extends FormRequest
     {
         return [
             'nama_supplier' => 'Nama Supplier',
-            'no_telepon'    => 'Nomor Telepon',
-            'alamat'        => 'Alamat',
+            'no_telepon' => 'Nomor Telepon',
+            'alamat' => 'Alamat',
         ];
     }
 }

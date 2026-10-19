@@ -15,7 +15,7 @@ class ProdukController extends Controller
      */
     public function index()
     {
-        $produk   = Produk::with('supplier')->orderBy('created_at', 'desc')->get();
+        $produk = Produk::with('supplier')->orderBy('created_at', 'desc')->get();
         $supplier = Supplier::orderBy('nama_supplier')->get();
 
         return view('admin.produk.index', compact('produk', 'supplier'));
@@ -28,12 +28,17 @@ class ProdukController extends Controller
     {
         $validated = $request->validate([
             'nama_produk' => 'required|string|max:255',
+            'kategori' => 'nullable|string|max:50',
             'supplier_id' => 'required|exists:supplier,id',
-            'deskripsi'   => 'nullable|string',
-            'harga'       => 'required|numeric|min:0',
-            'stok'        => 'required|integer|min:0',
-            'gambar'      => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'deskripsi' => 'nullable|string',
+            'harga' => 'required|numeric|min:0',
+            'stok' => 'required|integer|min:0',
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
+
+        if (empty($validated['kategori'])) {
+            $validated['kategori'] = 'pertanian';
+        }
 
         // Upload gambar kalau ada
         if ($request->hasFile('gambar')) {
@@ -55,12 +60,17 @@ class ProdukController extends Controller
 
         $validated = $request->validate([
             'nama_produk' => 'required|string|max:255',
+            'kategori' => 'nullable|string|max:50',
             'supplier_id' => 'required|exists:supplier,id',
-            'deskripsi'   => 'nullable|string',
-            'harga'       => 'required|numeric|min:0',
-            'stok'        => 'required|integer|min:0',
-            'gambar'      => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'deskripsi' => 'nullable|string',
+            'harga' => 'required|numeric|min:0',
+            'stok' => 'required|integer|min:0',
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
+
+        if (empty($validated['kategori'])) {
+            $validated['kategori'] = 'pertanian';
+        }
 
         if ($request->hasFile('gambar')) {
             // Hapus gambar lama

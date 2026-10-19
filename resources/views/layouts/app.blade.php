@@ -12,6 +12,7 @@
     @else
         <script src="https://cdn.tailwindcss.com"></script>
     @endif
+    @stack('styles')
 </head>
 <body class="bg-neutral-50 text-neutral-800 antialiased">
 
@@ -65,11 +66,11 @@
                 total += subtotal;
                 return `
                     <div class="flex gap-3 bg-neutral-50 rounded-xl p-3">
-                        <img src="${item.gambar}" alt="${item.nama}"
+                        <img src="${item.gambar || 'https://images.unsplash.com/photo-1592417817098-8f3d6ef2393c?w=150'}" alt="${item.nama || item.nama_produk || 'Produk'}"
                              class="w-20 h-20 object-cover rounded-lg shrink-0">
                         <div class="flex-1 min-w-0">
                             <div class="flex justify-between items-start gap-2">
-                                <h4 class="font-semibold text-sm text-neutral-900 truncate">${item.nama}</h4>
+                                <h4 class="font-semibold text-sm text-neutral-900 truncate">${item.nama || item.nama_produk || 'Produk'}</h4>
                                 <button onclick="hapusItem(${item.id})"
                                         class="text-red-500 hover:text-red-700 text-xs shrink-0">Hapus</button>
                             </div>

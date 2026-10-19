@@ -15,13 +15,13 @@ return new class extends Migration
             $table->id();
 
             $table->foreignId('user_id')
-                  ->constrained('user')
-                  ->cascadeOnDelete();
+                ->nullable()
+                ->constrained('user')
+                ->nullOnDelete();
 
             $table->date('tanggal');
             $table->integer('nominal');
             $table->text('keterangan')->nullable();
-           
 
             $table->timestamps();
         });

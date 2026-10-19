@@ -14,6 +14,7 @@ class SupplierController extends Controller
     public function index()
     {
         $supplier = Supplier::orderBy('created_at', 'desc')->get();
+
         return view('admin.supplier.index', compact('supplier'));
     }
 
@@ -24,15 +25,15 @@ class SupplierController extends Controller
     {
         $validated = $request->validate([
             'nama_supplier' => 'required|string|max:255|unique:supplier,nama_supplier',
-            'no_telepon'    => 'required|string|max:20',
-            'alamat'        => 'required|string',
+            'no_telepon' => 'required|string|max:20',
+            'alamat' => 'required|string',
         ], [
             'nama_supplier.required' => 'Nama supplier wajib diisi.',
-            'nama_supplier.unique'   => 'Nama supplier sudah terdaftar.',
-            'nama_supplier.max'      => 'Nama supplier maksimal 255 karakter.',
-            'no_telepon.required'    => 'Nomor telepon wajib diisi.',
-            'no_telepon.max'         => 'Nomor telepon maksimal 20 karakter.',
-            'alamat.required'        => 'Alamat wajib diisi.',
+            'nama_supplier.unique' => 'Nama supplier sudah terdaftar.',
+            'nama_supplier.max' => 'Nama supplier maksimal 255 karakter.',
+            'no_telepon.required' => 'Nomor telepon wajib diisi.',
+            'no_telepon.max' => 'Nomor telepon maksimal 20 karakter.',
+            'alamat.required' => 'Alamat wajib diisi.',
         ]);
 
         Supplier::create($validated);
@@ -49,16 +50,16 @@ class SupplierController extends Controller
         $supplier = Supplier::findOrFail($id);
 
         $validated = $request->validate([
-            'nama_supplier' => 'required|string|max:255|unique:supplier,nama_supplier,' . $id,
-            'no_telepon'    => 'required|string|max:20',
-            'alamat'        => 'required|string',
+            'nama_supplier' => 'required|string|max:255|unique:supplier,nama_supplier,'.$id,
+            'no_telepon' => 'required|string|max:20',
+            'alamat' => 'required|string',
         ], [
             'nama_supplier.required' => 'Nama supplier wajib diisi.',
-            'nama_supplier.unique'   => 'Nama supplier sudah terdaftar.',
-            'nama_supplier.max'      => 'Nama supplier maksimal 255 karakter.',
-            'no_telepon.required'    => 'Nomor telepon wajib diisi.',
-            'no_telepon.max'         => 'Nomor telepon maksimal 20 karakter.',
-            'alamat.required'        => 'Alamat wajib diisi.',
+            'nama_supplier.unique' => 'Nama supplier sudah terdaftar.',
+            'nama_supplier.max' => 'Nama supplier maksimal 255 karakter.',
+            'no_telepon.required' => 'Nomor telepon wajib diisi.',
+            'no_telepon.max' => 'Nomor telepon maksimal 20 karakter.',
+            'alamat.required' => 'Alamat wajib diisi.',
         ]);
 
         $supplier->update($validated);

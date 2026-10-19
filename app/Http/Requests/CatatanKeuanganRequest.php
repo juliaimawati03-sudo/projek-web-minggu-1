@@ -20,8 +20,8 @@ class CatatanKeuanganRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'tanggal'    => 'required|date',
-            'nominal'    => 'required|numeric|not_in:0',
+            'tanggal' => 'required|date',
+            'nominal' => 'required|numeric|not_in:0',
             'keterangan' => 'required|string|max:500',
         ];
     }
@@ -32,13 +32,13 @@ class CatatanKeuanganRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'tanggal.required'    => 'Tanggal wajib diisi.',
-            'tanggal.date'        => 'Format tanggal tidak valid.',
-            'nominal.required'    => 'Nominal wajib diisi.',
-            'nominal.numeric'     => 'Nominal harus berupa angka.',
-            'nominal.not_in'      => 'Nominal tidak boleh 0.',
+            'tanggal.required' => 'Tanggal wajib diisi.',
+            'tanggal.date' => 'Format tanggal tidak valid.',
+            'nominal.required' => 'Nominal wajib diisi.',
+            'nominal.numeric' => 'Nominal harus berupa angka.',
+            'nominal.not_in' => 'Nominal tidak boleh 0.',
             'keterangan.required' => 'Keterangan wajib diisi.',
-            'keterangan.max'      => 'Keterangan maksimal 500 karakter.',
+            'keterangan.max' => 'Keterangan maksimal 500 karakter.',
         ];
     }
 }

@@ -14,7 +14,7 @@ class FilterRiwayatRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'dari'   => 'nullable|date',
+            'dari' => 'nullable|date',
             'sampai' => 'nullable|date|after_or_equal:dari',
         ];
     }
@@ -22,8 +22,8 @@ class FilterRiwayatRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'dari.date'             => 'Format tanggal awal tidak valid.',
-            'sampai.date'           => 'Format tanggal akhir tidak valid.',
+            'dari.date' => 'Format tanggal awal tidak valid.',
+            'sampai.date' => 'Format tanggal akhir tidak valid.',
             'sampai.after_or_equal' => 'Tanggal akhir tidak boleh lebih kecil dari tanggal awal.',
         ];
     }

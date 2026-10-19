@@ -53,7 +53,18 @@
                             <div class="font-bold text-orange-900">Toko SIMANTAP</div>
                         </div>
                         <div>
-                            <div class="text-xs text-orange-700 font-medium mb-1">Jumlah Transfer</div>
+                            <div class="text-xs text-orange-700 font-medium mb-1">Rincian Pembayaran</div>
+                            <div class="bg-white/80 rounded-xl p-3 border border-orange-200 text-xs space-y-1 mb-2 text-neutral-700">
+                                <div class="flex justify-between">
+                                    <span>Subtotal Produk:</span>
+                                    <span id="metode-subtotal" class="font-medium">-</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Pengiriman (<span id="metode-ongkir-label">Ongkir</span>):</span>
+                                    <span id="metode-ongkir" class="font-medium text-neutral-800">Rp0</span>
+                                </div>
+                            </div>
+                            <div class="text-xs text-orange-700 font-medium mb-1">Jumlah Transfer Total</div>
                             <div id="metode-total" class="font-extrabold text-2xl text-green-600">Rp0</div>
                         </div>
                     </div>
@@ -173,6 +184,9 @@ function loadOrderData() {
     document.getElementById('no-pesanan').textContent = order.nomor;
     document.getElementById('metode-name').textContent = config.label;
     document.getElementById('metode-nomor').textContent = config.nomor;
+    document.getElementById('metode-subtotal').textContent = rupiah(order.subtotal || order.total);
+    document.getElementById('metode-ongkir').textContent = rupiah(order.ongkir || 0);
+    document.getElementById('metode-ongkir-label').textContent = order.shipping_label || 'Ongkir';
     document.getElementById('metode-total').textContent = rupiah(order.total);
 
     // Logo
@@ -277,7 +291,7 @@ function resetFile(e) {
     document.getElementById('preview-content').classList.add('hidden');
 }
 
-function handleUpload(e) {
+async function handleUpload(e) {
     e.preventDefault();
 
     if (!selectedFile) {
@@ -286,27 +300,79 @@ function handleUpload(e) {
         return;
     }
 
-    // Simulasi upload berhasil
     const order = JSON.parse(localStorage.getItem('simantap_last_order') || 'null');
-    if (order) {
-        order.payment_proof_name = selectedFile.name;
-        order.payment_status = 'Menunggu Verifikasi';
-        order.uploaded_at = new Date().toISOString();
-        localStorage.setItem('simantap_last_order', JSON.stringify(order));
+    if (!order) {
+        alert('Data pesanan tidak ditemukan. Silakan isi form pesanan kembali.');
+        window.location.href = "{{ route('checkout') }}";
+        return;
     }
 
-    // Hapus cart — pesanan sudah dibuat
-    localStorage.removeItem('simantap_cart');
-
-    // Tampilkan loading
     const btn = document.getElementById('btn-upload');
     btn.disabled = true;
-    btn.innerHTML = '<span>⏳</span> Mengirim...';
+    btn.innerHTML = '<span>⏳</span> Mengirim Pesanan ke Sistem...';
 
-    // Redirect ke halaman sukses
-    setTimeout(() => {
-        window.location.href = "{{ url('/orders/success') }}";
-    }, 800);
+    const formData = new FormData();
+    formData.append('_token', '{{ csrf_token() }}');
+    formData.append('nama', order.nama || '');
+    formData.append('hp', order.hp || '');
+    formData.append('alamat', order.alamat || '');
+    formData.append('latitude', order.latitude || '');
+    formData.append('longitude', order.longitude || '');
+    formData.append('catatan', order.catatan || '');
+    formData.append('payment_method', order.payment_method || 'Transfer Bank');
+    formData.append('shipping_method', order.shipping_method || 'pickup');
+    formData.append('ongkir', order.ongkir || 0);
+    formData.append('subtotal', order.subtotal || 0);
+    formData.append('total', order.total || 0);
+    formData.append('items', JSON.stringify(order.produk || []));
+    formData.append('bukti_transfer', selectedFile);
+
+    try {
+        const response = await fetch("{{ route('orders.submit') }}", {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
+
+        const resData = await response.json();
+
+        if (response.ok && resData.success) {
+            order.nomor = resData.kode_transaksi;
+            order.id = resData.transaksi_id;
+            order.payment_proof_name = selectedFile.name;
+            order.payment_status = 'Menunggu Verifikasi';
+            order.status = 'menunggu_verifikasi';
+            order.uploaded_at = new Date().toISOString();
+            localStorage.setItem('simantap_last_order', JSON.stringify(order));
+
+            // Simpan ke riwayat pesanan pelanggan lokal
+            let history = JSON.parse(localStorage.getItem('simantap_orders_history') || '[]');
+            const existingIdx = history.findIndex(h => h.nomor === order.nomor);
+            if (existingIdx >= 0) {
+                history[existingIdx] = order;
+            } else {
+                history.unshift(order);
+            }
+            localStorage.setItem('simantap_orders_history', JSON.stringify(history));
+
+            // Hapus cart — pesanan sudah dibuat
+            localStorage.removeItem('simantap_cart');
+
+            // Redirect ke halaman sukses
+            window.location.href = resData.redirect || "{{ url('/orders/success') }}";
+        } else {
+            alert('❌ Gagal memproses pesanan: ' + (resData.message || 'Terjadi kesalahan'));
+            btn.disabled = false;
+            btn.innerHTML = '<span>✅</span> Konfirmasi Pembayaran Selesai';
+        }
+    } catch (err) {
+        console.error(err);
+        alert('❌ Terjadi gangguan jaringan saat mengirim pesanan. Silakan coba lagi.');
+        btn.disabled = false;
+        btn.innerHTML = '<span>✅</span> Konfirmasi Pembayaran Selesai';
+    }
 }
 </script>
 @endpush

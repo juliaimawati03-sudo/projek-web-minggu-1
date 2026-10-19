@@ -16,7 +16,7 @@ class PasswordRequestController extends Controller
     public function index()
     {
         $requests = PasswordRequest::with('resolver')
-            ->orderByRaw("FIELD(status, 'pending', 'selesai', 'ditolak')")
+            ->orderByRaw("CASE WHEN status = 'pending' THEN 1 WHEN status = 'selesai' THEN 2 ELSE 3 END")
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -34,13 +34,13 @@ class PasswordRequestController extends Controller
             'new_password' => 'required|string|min:6',
         ], [
             'new_password.required' => 'Password baru wajib diisi.',
-            'new_password.min'      => 'Password minimal 6 karakter.',
+            'new_password.min' => 'Password minimal 6 karakter.',
         ]);
 
         $passwordRequest = PasswordRequest::findOrFail($id);
         $user = User::where('username', $passwordRequest->username)->first();
 
-        if (!$user) {
+        if (! $user) {
             return back()->withErrors(['username' => 'User tidak ditemukan.']);
         }
 
@@ -50,7 +50,7 @@ class PasswordRequestController extends Controller
 
         // Update status permintaan
         $passwordRequest->update([
-            'status'      => 'selesai',
+            'status' => 'selesai',
             'resolved_at' => now(),
             'resolved_by' => Auth::id(),
         ]);
@@ -67,7 +67,7 @@ class PasswordRequestController extends Controller
         $passwordRequest = PasswordRequest::findOrFail($id);
 
         $passwordRequest->update([
-            'status'      => 'ditolak',
+            'status' => 'ditolak',
             'resolved_at' => now(),
             'resolved_by' => Auth::id(),
         ]);

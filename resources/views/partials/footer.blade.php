@@ -36,7 +36,9 @@
                     </li>
                     <li class="flex items-start gap-2">
                         <span>📍</span>
-                        <span>{{ config('simantap.store_address') }}</span>
+                        <a href="{{ config('simantap.store_maps_url') }}" target="_blank" rel="noopener noreferrer" class="hover:text-green-400 transition">
+                            {{ config('simantap.store_address') }}
+                        </a>
                     </li>
                 </ul>
             </div>

@@ -22,10 +22,10 @@ class ForgotPasswordController extends Controller
     public function submit(Request $request)
     {
         $validated = $request->validate([
-            'username'   => 'required|string',
-            'nama'       => 'nullable|string|max:255',
+            'username' => 'required|string',
+            'nama' => 'nullable|string|max:255',
             'no_telepon' => 'nullable|string|max:20',
-            'pesan'      => 'nullable|string|max:500',
+            'pesan' => 'nullable|string|max:500',
         ], [
             'username.required' => 'Username wajib diisi.',
         ]);
@@ -33,7 +33,7 @@ class ForgotPasswordController extends Controller
         // Cek apakah username terdaftar
         $user = User::where('username', $validated['username'])->first();
 
-        if (!$user) {
+        if (! $user) {
             return back()
                 ->withInput()
                 ->withErrors(['username' => 'Username tidak terdaftar. Hubungi admin untuk bantuan.']);

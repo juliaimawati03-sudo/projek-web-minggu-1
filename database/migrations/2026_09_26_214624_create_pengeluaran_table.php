@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
 
             $table->foreignId('supplier_id')
-                  ->constrained('supplier')
-                  ->cascadeOnDelete();
+                ->constrained('supplier')
+                ->cascadeOnDelete();
 
             $table->date('tanggal');
             $table->integer('nominal');

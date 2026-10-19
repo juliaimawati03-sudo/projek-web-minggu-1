@@ -15,7 +15,7 @@ class CatatanKeuanganController extends Controller
      */
     public function index(Request $request)
     {
-        $dari   = $request->input('dari', now()->startOfMonth()->format('Y-m-d'));
+        $dari = $request->input('dari', now()->startOfMonth()->format('Y-m-d'));
         $sampai = $request->input('sampai', now()->format('Y-m-d'));
 
         $catatan = CatatanKeuangan::with('user')
@@ -24,7 +24,7 @@ class CatatanKeuanganController extends Controller
             ->orderBy('id', 'asc')
             ->get();
 
-        $totalDebit  = $catatan->where('nominal', '>', 0)->sum('nominal');
+        $totalDebit = $catatan->where('nominal', '>', 0)->sum('nominal');
         $totalKredit = abs($catatan->where('nominal', '<', 0)->sum('nominal'));
 
         return view('admin.laporan.index', compact(
@@ -38,15 +38,15 @@ class CatatanKeuanganController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'tanggal'    => 'required|date',
-            'nominal'    => 'required|numeric|not_in:0',
+            'tanggal' => 'required|date',
+            'nominal' => 'required|numeric|not_in:0',
             'keterangan' => 'required|string|max:500',
         ]);
 
         CatatanKeuangan::create([
-            'user_id'    => Auth::id(),
-            'tanggal'    => $validated['tanggal'],
-            'nominal'    => $validated['nominal'],
+            'user_id' => Auth::id(),
+            'tanggal' => $validated['tanggal'],
+            'nominal' => $validated['nominal'],
             'keterangan' => $validated['keterangan'],
         ]);
 
@@ -62,8 +62,8 @@ class CatatanKeuanganController extends Controller
         $catatan = CatatanKeuangan::findOrFail($id);
 
         $validated = $request->validate([
-            'tanggal'    => 'required|date',
-            'nominal'    => 'required|numeric|not_in:0',
+            'tanggal' => 'required|date',
+            'nominal' => 'required|numeric|not_in:0',
             'keterangan' => 'required|string|max:500',
         ]);
 
@@ -90,7 +90,7 @@ class CatatanKeuanganController extends Controller
      */
     public function exportPdf(Request $request)
     {
-        $dari   = $request->input('dari', now()->startOfMonth()->format('Y-m-d'));
+        $dari = $request->input('dari', now()->startOfMonth()->format('Y-m-d'));
         $sampai = $request->input('sampai', now()->format('Y-m-d'));
 
         $catatan = CatatanKeuangan::with('user')
@@ -98,13 +98,13 @@ class CatatanKeuanganController extends Controller
             ->orderBy('tanggal', 'asc')
             ->get();
 
-        $totalDebit  = $catatan->where('nominal', '>', 0)->sum('nominal');
+        $totalDebit = $catatan->where('nominal', '>', 0)->sum('nominal');
         $totalKredit = abs($catatan->where('nominal', '<', 0)->sum('nominal'));
 
         $pdf = Pdf::loadView('admin.laporan.pdf', compact(
             'catatan', 'totalDebit', 'totalKredit', 'dari', 'sampai'
         ));
 
-        return $pdf->download('laporan-keuangan-' . $dari . '-sd-' . $sampai . '.pdf');
+        return $pdf->download('laporan-keuangan-'.$dari.'-sd-'.$sampai.'.pdf');
     }
 }

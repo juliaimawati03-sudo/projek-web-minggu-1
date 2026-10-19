@@ -105,10 +105,16 @@
                 </button>
             </form>
 
-            {{-- Info --}}
-            <div class="mt-6 pt-6 border-t border-neutral-100">
-                <p class="text-xs text-neutral-500 text-center">
-                    Belum punya akun? Hubungi <strong>Administrator</strong> toko.
+            {{-- Info Registrasi Pelanggan --}}
+            <div class="mt-6 pt-6 border-t border-neutral-100 text-center space-y-3">
+                <p class="text-sm text-neutral-600">
+                    Pelanggan baru?
+                    <a href="{{ route('register') }}" class="font-bold text-green-600 hover:text-green-700 hover:underline">
+                        Daftar Akun Pelanggan di Sini
+                    </a>
+                </p>
+                <p class="text-xs text-neutral-400">
+                    Akun staf (Admin & Kasir) disediakan oleh pengelola toko.
                 </p>
             </div>
 

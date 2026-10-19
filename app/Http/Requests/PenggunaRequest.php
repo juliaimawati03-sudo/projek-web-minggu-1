@@ -33,7 +33,11 @@ class PenggunaRequest extends FormRequest
             'password' => $userId
                 ? 'nullable|string|min:6'          // update: opsional
                 : 'required|string|min:6',         // create: wajib
-            'role' => 'required|in:admin,kasir',
+            'role' => 'required|in:admin,kasir,pelanggan',
+            'no_hp' => 'nullable|string|max:30',
+            'alamat' => 'nullable|string|max:500',
+            'latitude' => 'nullable|string|max:50',
+            'longitude' => 'nullable|string|max:50',
         ];
     }
 
@@ -43,15 +47,15 @@ class PenggunaRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'nama.required'      => 'Nama lengkap wajib diisi.',
-            'nama.max'           => 'Nama maksimal 255 karakter.',
-            'username.required'  => 'Username wajib diisi.',
-            'username.unique'    => 'Username sudah terdaftar.',
-            'username.max'       => 'Username maksimal 255 karakter.',
-            'password.required'  => 'Password wajib diisi.',
-            'password.min'       => 'Password minimal 6 karakter.',
-            'role.required'      => 'Role wajib dipilih.',
-            'role.in'            => 'Role harus Admin atau Kasir.',
+            'nama.required' => 'Nama lengkap wajib diisi.',
+            'nama.max' => 'Nama maksimal 255 karakter.',
+            'username.required' => 'Username wajib diisi.',
+            'username.unique' => 'Username sudah terdaftar.',
+            'username.max' => 'Username maksimal 255 karakter.',
+            'password.required' => 'Password wajib diisi.',
+            'password.min' => 'Password minimal 6 karakter.',
+            'role.required' => 'Role wajib dipilih.',
+            'role.in' => 'Role harus Admin, Kasir, atau Pelanggan.',
         ];
     }
 }

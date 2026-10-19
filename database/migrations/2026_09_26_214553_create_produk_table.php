@@ -15,11 +15,13 @@ return new class extends Migration
             $table->id();
 
             $table->foreignId('supplier_id')
-                  ->constrained('supplier')
-                  ->cascadeOnDelete();
+                ->constrained('supplier')
+                ->cascadeOnDelete();
 
             $table->string('nama_produk');
+            $table->string('kategori', 50)->default('pertanian');
             $table->text('deskripsi')->nullable();
+            $table->string('gambar')->nullable();
             $table->integer('harga');
             $table->integer('stok');
 
