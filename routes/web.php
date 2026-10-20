@@ -55,7 +55,7 @@ Route::get('/password-changed', function () {
 // =====================================================
 // ADMIN PANEL
 // =====================================================
-Route::prefix('admin')->name('admin.')->group(function () {
+Route::prefix('admin')->middleware(['auth', 'role:admin'])->name('admin.')->group(function () {
 
 
     // ===== PERMINTAAN RESET PASSWORD =====
@@ -109,7 +109,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 // =====================================================
 // KASIR PANEL
 // =====================================================
-Route::prefix('kasir')->name('kasir.')->group(function () {
+Route::prefix('kasir')->middleware(['auth', 'role:kasir'])->name('kasir.')->group(function () {
 
     Route::get('/dashboard', function () {
         return view('kasir.dashboard');

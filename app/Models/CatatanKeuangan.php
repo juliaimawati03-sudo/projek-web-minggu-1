@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class CatatanKeuangan extends Model
 {
-    protected $table = 'catatan_keuangan';
+    use HasFactory;
 
+    protected $table = 'catatan_keuangan';
     protected $fillable = [
         'user_id',
         'tanggal',
