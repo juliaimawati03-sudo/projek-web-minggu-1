@@ -10,7 +10,6 @@ class CatatanKeuangan extends Model
     use HasFactory;
 
     protected $table = 'catatan_keuangan';
-
     protected $fillable = [
         'user_id',
         'tanggal',
