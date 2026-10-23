@@ -55,6 +55,18 @@ class OrderController extends Controller
     }
 
     /**
+     * Hitung Jarak (Haversine)
+     */
+    private function hitungJarak($lat1, $lon1, $lat2, $lon2) {
+        $theta = $lon1 - $lon2;
+        $dist = sin(deg2rad($lat1)) * sin(deg2rad($lat2)) +  cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * cos(deg2rad($theta));
+        $dist = acos($dist);
+        $dist = rad2deg($dist);
+        $miles = $dist * 60 * 1.1515;
+        return ($miles * 1.609344); 
+    }
+
+    /**
      * Simpan pesanan pelanggan dan upload bukti transfer ke database MySQL.
      */
     public function submitOrder(Request $request): JsonResponse
@@ -67,8 +79,8 @@ class OrderController extends Controller
             'longitude' => 'nullable|string|max:50',
             'catatan' => 'nullable|string|max:500',
             'payment_method' => 'required|string|max:50',
-            'shipping_method' => 'nullable|string|max:50',
-            'ongkir' => 'nullable|numeric|min:0',
+            'shipping_method' => 'required|string|max:50',
+            'berat_barang' => 'nullable|numeric|min:1',
             'subtotal' => 'nullable|numeric|min:0',
             'total' => 'required|numeric|min:1',
             'items' => 'required|string', // JSON string array of cart items
@@ -85,6 +97,35 @@ class OrderController extends Controller
 
         try {
             DB::beginTransaction();
+
+            // --- HITUNG ULANG ONGKIR DI SERVER (Anti-Cheat) ---
+            $ongkir = 0;
+            $tokoLat = config('simantap.store_latitude', -7.546835);
+            $tokoLng = config('simantap.store_longitude', 112.226512);
+            $jarakKm = $this->hitungJarak($tokoLat, $tokoLng, $request->latitude ?? $tokoLat, $request->longitude ?? $tokoLng);
+
+            if ($request->shipping_method === 'kurir_toko') {
+                $ongkir = 15000; 
+            } 
+            elseif ($request->shipping_method === 'jnt_reguler') {
+                if ($jarakKm <= 15) $ongkir = 10000;
+                elseif ($jarakKm <= 50) $ongkir = 20000;
+                else $ongkir = 35000;
+            } 
+            elseif ($request->shipping_method === 'jnt_cargo') {
+                $berat = $request->berat_barang ?? 10;
+                $beratTagihan = max(10, ceil($berat));
+                
+                // Tentukan tarif per kg (Simulasi string alamat)
+                $alamat = strtolower($request->alamat);
+                $tarifPerKg = 6500; 
+                if (str_contains($alamat, 'surabaya')) $tarifPerKg = 6500;
+                elseif (str_contains($alamat, 'jakarta')) $tarifPerKg = 4500;
+                elseif (str_contains($alamat, 'jombang')) $tarifPerKg = 3000;
+                
+                $ongkir = $beratTagihan * $tarifPerKg;
+            }
+            // 'pickup' -> ongkir = 0
 
             // Generate kode transaksi unik
             $kodeTransaksi = 'ORD-'.date('Ymd').'-'.strtoupper(substr(uniqid(), -4));
@@ -106,7 +147,7 @@ class OrderController extends Controller
                 'latitude' => $request->latitude,
                 'longitude' => $request->longitude,
                 'total_harga' => $request->total,
-                'ongkir' => $request->ongkir ?? 0,
+                'ongkir' => $ongkir, // <-- Gunakan hasil hitung server, BUKAN request->ongkir
                 'metode_pembayaran' => $request->payment_method,
                 'bukti_transfer' => $buktiPath,
                 'status' => 'menunggu_verifikasi',

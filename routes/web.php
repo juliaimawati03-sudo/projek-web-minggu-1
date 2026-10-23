@@ -15,6 +15,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Kasir\PesananController;
 use App\Http\Controllers\Kasir\RiwayatController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\VarianController;
 
 // =====================================================
 // PUBLIC
@@ -114,4 +115,6 @@ Route::middleware(['auth', 'role:kasir,admin'])->prefix('kasir')->name('kasir.')
     
     // ===== RIWAYAT =====
     Route::get('/riwayat', [RiwayatController::class, 'index'])->name('riwayat.index');
+
+  
 });

@@ -184,9 +184,9 @@
                 </div>
                 <p class="text-sm text-neutral-500 mb-4">Pilih apakah barang ingin diambil langsung atau diantar ke alamat Anda:</p>
 
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3" id="shipping-options-container">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3" id="shipping-options-container">
 
-                    {{-- Ambil di Toko --}}
+                    <!-- 1. Ambil di Toko -->
                     <label class="shipping-option cursor-pointer block">
                         <input type="radio" name="shipping_method" value="pickup" data-cost="0" data-label="Ambil Sendiri di Toko" data-type="Ambil di Toko" class="sr-only" checked onchange="handleShippingChange()">
                         <div class="p-4 border-2 border-green-600 bg-green-50/60 rounded-xl transition hover:border-green-600 h-full flex flex-col justify-between">
@@ -198,11 +198,11 @@
                                 <div class="font-bold text-neutral-800 text-sm">Ambil di Toko</div>
                                 <div class="text-xs text-neutral-500 mt-1">Barang disiapkan di toko SIMANTAP</div>
                             </div>
-                            <div class="font-extrabold text-green-700 text-base mt-3">Rp0</div>
+                            <div class="font-extrabold text-green-700 text-base mt-3" id="harga-pickup">Rp0</div>
                         </div>
                     </label>
 
-                    {{-- Kurir Toko (Diantar Langsung) --}}
+                    <!-- 2. Kurir Toko -->
                     <label class="shipping-option cursor-pointer block">
                         <input type="radio" name="shipping_method" value="kurir_toko" data-cost="15000" data-label="Kurir Toko (Diantar Langsung)" data-type="Barang Diantar" class="sr-only" onchange="handleShippingChange()">
                         <div class="p-4 border-2 border-neutral-200 rounded-xl transition hover:border-green-500 h-full flex flex-col justify-between">
@@ -214,25 +214,51 @@
                                 <div class="font-bold text-neutral-800 text-sm">Kurir Toko</div>
                                 <div class="text-xs text-neutral-500 mt-1">Diantar langsung ke alamat rumah Anda</div>
                             </div>
-                            <div class="font-extrabold text-neutral-800 text-base mt-3">Rp15.000</div>
+                            <div class="font-extrabold text-neutral-800 text-base mt-3" id="harga-kurir">Rp15.000</div>
                         </div>
                     </label>
 
-                    {{-- Ekspedisi Kargo (Diantar Luar Area) --}}
+                    <!-- 3. J&T Reguler -->
                     <label class="shipping-option cursor-pointer block">
-                        <input type="radio" name="shipping_method" value="ekspedisi" data-cost="30000" data-label="Ekspedisi Rekanan (Diantar Kargo)" data-type="Barang Diantar" class="sr-only" onchange="handleShippingChange()">
+                        <input type="radio" name="shipping_method" value="jnt_reguler" data-label="Ekspedisi J&T Reguler" data-type="Barang Diantar" class="sr-only" onchange="handleShippingChange()">
+                        <div class="p-4 border-2 border-neutral-200 rounded-xl transition hover:border-green-500 h-full flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-2xl">📦</span>
+                                    <span class="text-xs font-bold px-2 py-0.5 bg-red-100 text-red-700 rounded-full">Reguler</span>
+                                </div>
+                                <div class="font-bold text-neutral-800 text-sm">Ekspedisi J&T</div>
+                                <div class="text-xs text-neutral-500 mt-1">Dihitung per-jarak (mulai Rp10.000)</div>
+                            </div>
+                            <div class="font-extrabold text-neutral-800 text-base mt-3" id="harga-jnt-reguler">Hitung Otomatis</div>
+                        </div>
+                    </label>
+
+                    <!-- 4. J&T Cargo -->
+                    <label class="shipping-option cursor-pointer block">
+                        <input type="radio" name="shipping_method" value="jnt_cargo" data-label="Ekspedisi J&T Cargo (Min. 10 Kg)" data-type="Barang Diantar" class="sr-only" onchange="handleShippingChange()">
                         <div class="p-4 border-2 border-neutral-200 rounded-xl transition hover:border-green-500 h-full flex flex-col justify-between">
                             <div>
                                 <div class="flex items-center justify-between mb-2">
                                     <span class="text-2xl">🚛</span>
-                                    <span class="text-xs font-bold px-2 py-0.5 bg-purple-100 text-purple-700 rounded-full">Luar Area</span>
+                                    <span class="text-xs font-bold px-2 py-0.5 bg-purple-100 text-purple-700 rounded-full">Kargo Luar Area</span>
                                 </div>
-                                <div class="font-bold text-neutral-800 text-sm">Ekspedisi Kargo</div>
-                                <div class="text-xs text-neutral-500 mt-1">Pengantaran alat berat / luar kota</div>
+                                <div class="font-bold text-neutral-800 text-sm">J&T Cargo</div>
+                                <div class="text-xs text-neutral-500 mt-1">Barang berat (mulai Rp6.500/kg)</div>
                             </div>
-                            <div class="font-extrabold text-neutral-800 text-base mt-3">Rp30.000</div>
+                            <div class="font-extrabold text-neutral-800 text-base mt-3" id="harga-jnt-cargo">Hitung Otomatis</div>
                         </div>
                     </label>
+                </div>
+
+                <!-- INPUT BERAT BARANG (Khusus J&T Cargo) -->
+                <div id="input-berat-container" class="mt-4 hidden bg-amber-50 border border-amber-200 rounded-xl p-4">
+                    <label class="block text-sm font-medium text-amber-900 mb-1">
+                        Berat Barang (Kg) <span class="text-red-500">*</span>
+                    </label>
+                    <input type="number" name="berat_barang" id="berat_barang" min="1" step="1" value="10"
+                           class="w-full px-4 py-2.5 border border-amber-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500">
+                    <p class="text-xs text-amber-600 mt-1">Minimal pengiriman J&T Cargo adalah 10 Kg.</p>
                 </div>
 
                 {{-- Notifikasi Keterangan Status Pengantaran --}}
@@ -418,6 +444,10 @@ document.addEventListener('DOMContentLoaded', () => {
     initMapToko();
     initMapPelanggan();
     document.getElementById('form-pemesanan').addEventListener('submit', handleSubmit);
+    
+    // Event Listener untuk update ongkir otomatis
+    document.getElementById('berat_barang')?.addEventListener('input', hitungOngkirOtomatis);
+    document.getElementById('alamat')?.addEventListener('input', hitungOngkirOtomatis);
 });
 
 function rupiah(n) {
@@ -440,7 +470,7 @@ function renderProdukDiForm() {
         btnKonfirmasi.classList.add('opacity-50', 'cursor-not-allowed');
         cachedSubtotal = 0;
         cachedTotalItem = 0;
-        updateTotalDisplay();
+        hitungOngkirOtomatis();
         return;
     }
 
@@ -474,7 +504,7 @@ function renderProdukDiForm() {
 
     cachedSubtotal = cart.reduce((sum, i) => sum + (i.harga * i.qty), 0);
     cachedTotalItem = cart.reduce((sum, i) => sum + i.qty, 0);
-    updateTotalDisplay();
+    hitungOngkirOtomatis();
 }
 
 // Inisialisasi Peta Lokasi & Titik Koordinat Toko SIMANTAP
@@ -529,12 +559,14 @@ function initMapPelanggan() {
         const pos = markerPelanggan.getLatLng();
         latInput.value = pos.lat.toFixed(6);
         lngInput.value = pos.lng.toFixed(6);
+        hitungOngkirOtomatis(); // Hitung ulang ongkir saat marker digeser
     });
 
     mapPelanggan.on('click', function (e) {
         markerPelanggan.setLatLng(e.latlng);
         latInput.value = e.latlng.lat.toFixed(6);
         lngInput.value = e.latlng.lng.toFixed(6);
+        hitungOngkirOtomatis(); // Hitung ulang ongkir saat peta diklik
     });
 
     [latInput, lngInput].forEach(inp => {
@@ -544,6 +576,7 @@ function initMapPelanggan() {
             if (!isNaN(lat) && !isNaN(lng) && mapPelanggan && markerPelanggan) {
                 mapPelanggan.setView([lat, lng], 15);
                 markerPelanggan.setLatLng([lat, lng]);
+                hitungOngkirOtomatis();
             }
         });
     });
@@ -575,6 +608,8 @@ function deteksiLokasiPelanggan() {
                 mapPelanggan.setView([lat, lng], 16);
                 markerPelanggan.setLatLng([lat, lng]).bindPopup('<b>📍 Lokasi GPS Anda</b>').openPopup();
             }
+
+            hitungOngkirOtomatis(); // Update ongkir setelah GPS didapat
 
             icon.textContent = '✓';
             label.textContent = 'Lokasi Terdeteksi';
@@ -635,53 +670,94 @@ function handleShippingChange() {
     const badge = document.getElementById('notif-status-badge');
     const desc = document.getElementById('notif-status-desc');
     const kotakToko = document.getElementById('kotak-toko-section');
+    const inputBerat = document.getElementById('input-berat-container');
     const teksToko = document.getElementById('teks-keterangan-toko');
 
+    // Tampilkan/Sembunyikan input berat
+    if (val === 'jnt_cargo') {
+        inputBerat.classList.remove('hidden');
+    } else {
+        inputBerat.classList.add('hidden');
+    }
+
+    // Logika Keterangan Notifikasi
     if (val === 'pickup') {
         badge.textContent = 'Keterangan: Barang Diproses & Siap Diambil di Toko';
         desc.innerHTML = 'Setelah pembayaran diverifikasi, pesanan Anda akan <strong>diproses & disiapkan</strong> di toko. Anda dapat mengambilnya langsung di toko SIMANTAP.';
-        if (kotakToko) {
-            kotakToko.classList.add('border-green-600', 'ring-2', 'ring-green-500/20', 'bg-green-50/50');
-            kotakToko.classList.remove('border-neutral-200');
-        }
-        if (teksToko) {
-            teksToko.innerHTML = 'Anda memilih <strong>Ambil Sendiri di Toko</strong>. Silakan kunjungi lokasi titik koordinat toko pada peta di bawah saat pesanan Anda sudah siap diambil.';
-        }
+        if (teksToko) teksToko.innerHTML = 'Anda memilih <strong>Ambil Sendiri di Toko</strong>. Silakan kunjungi lokasi titik koordinat toko pada peta di bawah saat pesanan Anda sudah siap diambil.';
     } else if (val === 'kurir_toko') {
         badge.textContent = 'Keterangan: Barang Diproses & Diantar oleh Kurir Toko 🛵';
         desc.innerHTML = 'Pesanan Anda akan <strong>diproses & disiapkan</strong> terlebih dahulu, kemudian <strong>diantar langsung</strong> ke alamat tujuan oleh kurir resmi SIMANTAP.';
-        if (kotakToko) {
-            kotakToko.classList.remove('border-green-600', 'ring-2', 'ring-green-500/20');
-            kotakToko.classList.add('border-emerald-300');
-        }
-        if (teksToko) {
-            teksToko.innerHTML = 'Pesanan Anda akan dikirim dari <strong>Toko SIMANTAP</strong> (titik koordinat toko di atas) langsung menuju ke titik koordinat pengantaran Anda oleh kurir toko.';
-        }
-    } else {
-        badge.textContent = 'Keterangan: Barang Diproses & Diantar via Ekspedisi 🚛';
-        desc.innerHTML = 'Pesanan Anda akan <strong>diproses & dipacking aman</strong>, lalu <strong>diantar ke alamat</strong> melalui jasa ekspedisi partner SIMANTAP.';
-        if (kotakToko) {
-            kotakToko.classList.remove('border-green-600', 'ring-2', 'ring-green-500/20');
-            kotakToko.classList.add('border-emerald-300');
-        }
-        if (teksToko) {
-            teksToko.innerHTML = 'Pesanan Anda akan dipacking aman dan diberangkatkan dari <strong>Toko SIMANTAP</strong> (titik koordinat toko di atas) menuju ke alamat Anda via kargo ekspedisi.';
-        }
+    } else if (val === 'jnt_reguler') {
+        badge.textContent = 'Keterangan: Barang Diproses & Diantar via J&T Reguler 📦';
+        desc.innerHTML = 'Pesanan Anda akan dipacking aman dan diantar ke alamat melalui ekspedisi J&T Express (Reguler).';
+    } else if (val === 'jnt_cargo') {
+        badge.textContent = 'Keterangan: Barang Diproses & Diantar via J&T Cargo 🚛';
+        desc.innerHTML = 'Pesanan Anda akan dipacking aman dan diantar ke alamat melalui layanan J&T Cargo (Minimal 10 Kg).';
     }
 
-    updateTotalDisplay();
+    hitungOngkirOtomatis();
 }
 
-function updateTotalDisplay() {
+// Fungsi Hitung Ongkir Otomatis (Haversine untuk J&T)
+function hitungOngkirOtomatis() {
     const selectedRadio = document.querySelector('input[name="shipping_method"]:checked');
-    const ongkir = selectedRadio ? Number(selectedRadio.dataset.cost || 0) : 0;
-    const label = selectedRadio ? selectedRadio.dataset.label : 'Ambil di Toko';
+    if (!selectedRadio) return;
 
+    let ongkir = Number(selectedRadio.dataset.cost || 0);
+    const method = selectedRadio.value;
+
+    // Ambil koordinat pelanggan dari input form
+    const lat = parseFloat(document.getElementById('pelanggan-lat').value);
+    const lng = parseFloat(document.getElementById('pelanggan-lng').value);
+
+    // Jika pelanggan belum set koordinat, pakai jarak 0 (anggap ambil di toko)
+    const jarakKm = (!isNaN(lat) && !isNaN(lng)) ? hitungJarak(STORE_LAT, STORE_LNG, lat, lng) : 0;
+
+    if (method === 'jnt_reguler') {
+        // Simulasi Tarif J&T Reguler berdasarkan jarak
+        if (jarakKm <= 15) ongkir = 10000;
+        else if (jarakKm <= 50) ongkir = 20000;
+        else ongkir = 35000;
+        
+        document.getElementById('harga-jnt-reguler').textContent = rupiah(ongkir);
+    } 
+    else if (method === 'jnt_cargo') {
+        // Simulasi Tarif J&T Cargo berdasarkan Berat (Min 10kg)
+        const berat = parseFloat(document.getElementById('berat_barang').value) || 10;
+        const beratTagihan = Math.max(10, berat);
+        
+        // Tarif Default Rp 6.500 / kg (bisa disesuaikan dengan string alamat)
+        let tarifPerKg = 6500; 
+        const alamat = document.getElementById('alamat').value.toLowerCase();
+        
+        if (alamat.includes('surabaya')) tarifPerKg = 6500;
+        else if (alamat.includes('jakarta')) tarifPerKg = 4500;
+        else if (alamat.includes('jombang')) tarifPerKg = 3000;
+        
+        ongkir = beratTagihan * tarifPerKg;
+        document.getElementById('harga-jnt-cargo').textContent = rupiah(ongkir);
+    }
+
+    // Update total tampilan
+    const label = selectedRadio.dataset.label;
     document.getElementById('total-item').textContent = cachedTotalItem + ' item';
     document.getElementById('subtotal-harga').textContent = rupiah(cachedSubtotal);
     document.getElementById('ongkir-harga').textContent = rupiah(ongkir);
     document.getElementById('label-ongkir-terpilih').textContent = label;
     document.getElementById('total-harga').textContent = rupiah(cachedSubtotal + ongkir);
+}
+
+// Fungsi Haversine (Jarak Km)
+function hitungJarak(lat1, lon1, lat2, lon2) {
+    var R = 6371; // Radius bumi dalam km
+    var dLat = (lat2 - lat1) * Math.PI / 180;
+    var dLon = (lon2 - lon1) * Math.PI / 180;
+    var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+            Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+            Math.sin(dLon/2) * Math.sin(dLon/2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return R * c;
 }
 
 function ubahQtyForm(id, delta) {
@@ -728,10 +804,15 @@ function handleSubmit(e) {
 
     // Pengiriman
     const selectedShipping = document.querySelector('input[name="shipping_method"]:checked');
-    const ongkir = selectedShipping ? Number(selectedShipping.dataset.cost || 0) : 0;
     const shippingMethod = selectedShipping ? selectedShipping.value : 'pickup';
     const shippingLabel = selectedShipping ? selectedShipping.dataset.label : 'Ambil Sendiri di Toko';
     const shippingType = selectedShipping ? selectedShipping.dataset.type : 'Ambil di Toko';
+    
+    // Ambil ongkir dari tampilan terakhir (sudah dihitung JS)
+    const ongkirStr = document.getElementById('ongkir-harga').textContent.replace(/[^0-9]/g, '');
+    const ongkir = parseInt(ongkirStr) || 0;
+
+    const beratBarang = document.getElementById('berat_barang')?.value || 0;
 
     const subtotal = cart.reduce((sum, i) => sum + (i.harga * i.qty), 0);
     const total = subtotal + ongkir;
@@ -764,6 +845,7 @@ function handleSubmit(e) {
         shipping_method: shippingMethod,
         shipping_label: shippingLabel,
         shipping_type: shippingType,
+        berat_barang: beratBarang,
         ongkir: ongkir,
         subtotal: subtotal,
         total: total,
